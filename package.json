@@ -1,0 +1,32 @@
+{
+  "name": "support-chat",
+  "version": "1.0.0",
+  "description": "Server side of chat for use in all support panel website and relation with",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasoudZarjani/support-chat.git"
+  },
+  "keywords": [
+    "chat",
+    "support",
+    "server"
+  ],
+  "author": "masoud zarjani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MasoudZarjani/support-chat/issues"
+  },
+  "homepage": "https://github.com/MasoudZarjani/support-chat#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "http": "0.0.0",
+    "mongoose": "^5.4.15",
+    "socket.io": "^2.2.0"
+  }
+}
