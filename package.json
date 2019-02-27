@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && node dist/server.js --host 0.0.0.0 --allowed-hosts 192.168.0.197"
   },
   "repository": {
     "type": "git",
@@ -24,9 +25,15 @@
   "homepage": "https://github.com/MasoudZarjani/support-chat#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "mongoose": "^5.4.15",
     "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rimraf": "^2.6.3"
   }
 }
