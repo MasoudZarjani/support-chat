@@ -16,7 +16,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var app = (0, _express2.default)();
 
-//Listen app port
 var port = _app2.default.app.port;
 
 
@@ -28,7 +27,8 @@ var io = require('socket.io')(server);
 
 io.on('connection', function (socket) {
     console.log(socket.id);
-    socket.on('SEND_MESSAGE', function (data) {
-        io.emit('MESSAGE', data);
+    socket.on('send_message', function (data) {
+
+        io.emit('message', data);
     });
 });

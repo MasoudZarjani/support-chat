@@ -2,7 +2,7 @@
   "name": "support-chat",
   "version": "1.0.0",
   "description": "Server side of chat for use in all support panel website and relation with",
-  "main": "server.js",
+  "main": "dist/index",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
@@ -25,10 +25,12 @@
   "homepage": "https://github.com/MasoudZarjani/support-chat#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "braces": "^2.3.2",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "http": "0.0.0",
-    "mongoose": "^5.4.15",
+    "mongoose": "^5.4.16",
+    "mongoose-timestamp": "^0.6.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
