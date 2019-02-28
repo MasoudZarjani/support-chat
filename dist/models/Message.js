@@ -14,22 +14,21 @@ var _mongooseTimestamp2 = _interopRequireDefault(_mongooseTimestamp);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var UserSchema = new _mongoose2.default.Schema({
-    name: {
+var MessageSchema = new _mongoose2.default.Schema({
+    title: {
         type: String
     },
-    family: {
+    message: {
         type: String
     },
-    token: {
+    from: {
         type: String
     },
-    messages: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Message'
-    }]
+    to: {
+        type: String
+    }
 });
 
-UserSchema.plugin(_mongooseTimestamp2.default);
+MessageSchema.plugin(_mongooseTimestamp2.default);
 
-exports.default = _mongoose2.default.model('User', UserSchema);
+exports.default = _mongoose2.default.model('Message', MessageSchema);

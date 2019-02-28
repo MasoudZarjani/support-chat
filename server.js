@@ -1,24 +1,31 @@
 import express from 'express'
 import config from './configs/app'
 import mongoose from './configs/db'
-
-const app = express();
+import socketIo from 'socket.io'
+const socketEvents = require('./helpers/socket').default;
+const http = require('http');
 
 const {
     app: {
-        port
+        port,
+        host
     }
 } = config;
 
-const server = app.listen(port, function() {
-    console.log(`Server running at Port ${port}`);
-});
+class Server {
+    constructor() {
+        this.app = express();
+        this.http = http.Server(this.app);
+        this.socket = socketIo(this.http);
+    }
 
-const io = require('socket.io')(server);
+    appRun() {
+        new socketEvents(this.socket);
+        this.http.listen(port, () => {
+            console.log(`Listening on port = ${port}`);
+        });
+    }
+}
 
-io.on('connection', function(socket) {
-    console.log(socket.id)
-    socket.on('send_message', function(data) {
-        io.emit('message', data)
-    });
-});
+const app = new Server();
+app.appRun();

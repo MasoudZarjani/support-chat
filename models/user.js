@@ -17,6 +17,6 @@ const UserSchema = new mongoose.Schema({
     }]
 })
 
-PostSchema.plugin(timestamps);
+UserSchema.plugin(timestamps);
 
 export default mongoose.model('User', UserSchema)

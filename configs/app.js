@@ -3,7 +3,8 @@ dotenv.config()
 
 export default {
     app: {
-        port: process.env.PORT || 4000
+        port: process.env.PORT || 4000,
+        host: process.env.HOST || 'localhost'
     },
     db: {
         host: process.env.DB_HOST || 'localhost',

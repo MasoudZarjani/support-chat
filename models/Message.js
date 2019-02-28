@@ -16,6 +16,6 @@ const MessageSchema = new mongoose.Schema({
     }
 })
 
-PostSchema.plugin(timestamps);
+MessageSchema.plugin(timestamps);
 
 export default mongoose.model('Message', MessageSchema)
