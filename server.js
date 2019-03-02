@@ -1,9 +1,9 @@
 import express from 'express'
 import config from './configs/app'
-import mongoose from './configs/db'
+
 import socketIo from 'socket.io'
-const socketEvents = require('./helpers/socket').default;
-const http = require('http');
+import http from 'http'
+import socketEvents from './helpers/socket'
 
 const {
     app: {
@@ -20,9 +20,9 @@ class Server {
     }
 
     appRun() {
-        new socketEvents(this.socket);
+        new socketEvents(this.socket).socketEvents();
         this.http.listen(port, () => {
-            console.log(`Listening on port = ${port}`);
+            console.log(`Listening on http://${host}:${port}`);
         });
     }
 }

@@ -1,13 +1,24 @@
+import { mongodb } from '../configs/db'
 class Socket {
     constructor(socket) {
         this.io = socket;
-        console.log(this.io)
+        mongodb();
     }
 
     socketEvents() {
         this.io.on('connection', (socket) => {
-            console.log('users')
-
+            console.log(socket.id);
+            socket.on('sendMessage', function (data) {
+                console.log(data)
+                socket.emit('message', data);
+            });
+            
+            socket.on('disconnect', async () => {
+                socket.emit('chatListRes', {
+                    userDisconnected: true,
+                    socket_id: socket.id
+                });
+            });
         })
     }
 }

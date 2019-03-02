@@ -6,7 +6,7 @@ export default {
         port: process.env.PORT || 4000,
         host: process.env.HOST || 'localhost'
     },
-    db: {
+    mongodb: {
         host: process.env.DB_HOST || 'localhost',
         port: process.env.DB_PORT || 27017,
         name: process.env.DB_DATABASE || 'chat',

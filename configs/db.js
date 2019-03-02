@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import config from './app'
 
 const {
-    db: {
+    mongodb: {
         host,
         port,
         name,
@@ -12,7 +12,8 @@ const {
 
 const connectionString = `${connection}://${host}:${port}/${name}`;
 mongoose.Promise = global.Promise;
-mongoose.connect(connectionString, {
+
+export const mongodb = () => mongoose.connect(connectionString, {
     useNewUrlParser: true
 }, (err) => {
     if (!err)
@@ -20,5 +21,3 @@ mongoose.connect(connectionString, {
     else
         console.log('Error in DB Connection: '.JSON.stringify(err, undefined, 2));
 });
-
-module.exports = mongoose;
