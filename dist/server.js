@@ -10,6 +10,8 @@ var _app = require('./configs/app');
 
 var _app2 = _interopRequireDefault(_app);
 
+var _db = require('./configs/db');
+
 var _socket = require('socket.io');
 
 var _socket2 = _interopRequireDefault(_socket);
@@ -33,6 +35,9 @@ var _config$app = _app2.default.app,
 var Server = function () {
     function Server() {
         _classCallCheck(this, Server);
+
+        (0, _db.mongodb)();
+        (0, _db.mysqldb)();
 
         this.app = (0, _express2.default)();
         this.http = _http2.default.Server(this.app);

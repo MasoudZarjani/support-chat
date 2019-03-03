@@ -1,6 +1,6 @@
 import express from 'express'
 import config from './configs/app'
-
+import { mongodb, mysqldb } from './configs/db'
 import socketIo from 'socket.io'
 import http from 'http'
 import socketEvents from './helpers/socket'
@@ -14,6 +14,9 @@ const {
 
 class Server {
     constructor() {
+        mongodb();
+        mysqldb();
+
         this.app = express();
         this.http = http.Server(this.app);
         this.socket = socketIo(this.http);
