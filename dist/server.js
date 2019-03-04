@@ -24,6 +24,10 @@ var _socket3 = require('./helpers/socket');
 
 var _socket4 = _interopRequireDefault(_socket3);
 
+var _cors = require('cors');
+
+var _cors2 = _interopRequireDefault(_cors);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -37,11 +41,16 @@ var Server = function () {
         _classCallCheck(this, Server);
 
         (0, _db.mongodb)();
-        (0, _db.mysqldb)();
 
         this.app = (0, _express2.default)();
+        this.app.use((0, _cors2.default)());
         this.http = _http2.default.Server(this.app);
         this.socket = (0, _socket2.default)(this.http);
+        this.app.get('/users', function (req, res) {
+            res.set('Access-Control-Allow-Origin', req.headers.origin);
+            res.set('Access-Control-Allow-Credentials', 'true');
+            res.send('Ok');
+        });
     }
 
     _createClass(Server, [{
