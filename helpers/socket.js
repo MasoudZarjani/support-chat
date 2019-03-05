@@ -23,7 +23,7 @@ class Socket {
             });
 
             //get file and save in uploads folder
-            socket.on('sendFile', function (data) {
+            socket.on(`sendFile-${token}`, function (data) {
                 console.log(" image response: " + data)
                 //use fs.writeFile
 

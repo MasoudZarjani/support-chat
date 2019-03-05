@@ -26,7 +26,7 @@ var MessageSchema = new _mongoose2.default.Schema({
         ref: 'User'
     },
     to: {
-        type: Schema.Types.ObjectId,
+        type: _mongoose2.default.Schema.Types.ObjectId,
         ref: 'User'
     }
 });

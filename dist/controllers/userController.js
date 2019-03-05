@@ -23,9 +23,17 @@ var userController = function () {
         key: 'getUser',
         value: async function getUser(req, res, next) {
             try {
+                var UserList = [];
                 var Users = await _User2.default.find();
+                Users.forEach(function (User) {
+                    UserList.push({
+                        id: User._id,
+                        name: UserList.name = User.name + "  " + User.family
+                    });
+                });
+                console.log(UserList);
 
-                res.json(Users);
+                res.json(UserList);
             } catch (err) {
                 res.status(500).json({
                     data: err.message,

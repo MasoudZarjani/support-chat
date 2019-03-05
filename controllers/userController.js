@@ -3,8 +3,15 @@ import User from '../models/User';
 class userController {
     async getUser(req, res, next) {
         try {
+            let UserList = []
             let Users = await User.find()
-            res.json(Users)
+            Users.forEach(User => {
+                UserList.push({
+                    id: User._id,
+                    name: UserList.name = User.name + "  " + User.family
+                })
+            });
+            res.json(UserList)
         } catch (err) {
             res.status(500).json({
                 data: err.message,
