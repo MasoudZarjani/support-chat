@@ -8,7 +8,7 @@ class userController {
             Users.forEach(User => {
                 UserList.push({
                     id: User._id,
-                    name: UserList.name = User.name + "  " + User.family
+                    name: User.name + "  " + User.family
                 })
             });
             res.json(UserList)

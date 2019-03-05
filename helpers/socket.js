@@ -1,4 +1,6 @@
 import fs from 'fs'
+import messageController from '../controllers/messageController'
+
 class Socket {
     constructor(socket) {
         this.io = socket;
@@ -7,8 +9,15 @@ class Socket {
     socketEvents() {
         this.io.on("connection", socket => {
             let token = socket.handshake.query.token;
-            console.log(token);
-            console.log("user connect");
+
+            //get messages list
+            socket.on(`getMessages-${token}`, function (data) {
+                console.log(data)
+                messageController.getMessages(data.id).then(function (result) {
+                    socket.emit(`sendMessages-${token}`, result);
+                })
+            });
+
 
             //send message from admin to a user
             socket.on("sendMessage", function (data) {
@@ -24,17 +33,16 @@ class Socket {
 
             //get file and save in uploads folder
             socket.on(`sendFile-${token}`, function (data) {
-                console.log(" image response: " + data)
                 //use fs.writeFile
-
+                data = data.image;
                 data = data.replace(/^data:image\/png;base64,/, "");
 
                 fs.writeFile("out.png", data, 'base64', function (err) {
                     console.log(err);
                 });
-                
+
                 socket.emit(`getMessage-${token}`, {
-                    data: 'ok'
+                    sendMessage: 'ok'
                 });
             });
 
