@@ -6,8 +6,11 @@ import {
 } from './configs/db'
 import socketIo from 'socket.io'
 import http from 'http'
-import socketEvents from './helpers/socket'
+import bodyParser from 'body-parser'
 import cors from 'cors'
+
+import socketEvents from './helpers/socket'
+import router from './routes/api'
 
 const {
     app: {
@@ -16,22 +19,24 @@ const {
     }
 } = config;
 
-
-
-
 class Server {
     constructor() {
         mongodb();
 
-        this.app = express();
+        this.app = express()
+        this.app.use(bodyParser.json())
+        this.app.use(bodyParser.urlencoded({
+            extended: true
+        }))
         this.app.use(cors())
-        this.http = http.Server(this.app);
-        this.socket = socketIo(this.http);
-        this.app.get('/users', function (req, res) {
-            res.set('Access-Control-Allow-Origin',  req.headers.origin)
+        this.app.use(function (req, res, next) {
+            res.set('Access-Control-Allow-Origin', req.headers.origin)
             res.set('Access-Control-Allow-Credentials', 'true')
-            res.send('Ok')
-        })
+            next();
+        });
+        this.http = http.Server(this.app)
+        this.socket = socketIo(this.http)
+        this.app.use(router)
     }
 
     appRun() {

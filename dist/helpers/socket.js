@@ -57,8 +57,6 @@ var Socket = function () {
                     });
                 });
 
-                socket.on("GetUsersList", function (data) {});
-
                 socket.on("disconnect", async function () {
                     socket.emit("chatListRes", {
                         userDisconnected: true,

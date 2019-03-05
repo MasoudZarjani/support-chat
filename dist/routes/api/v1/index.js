@@ -8,14 +8,14 @@ var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _userController = require('../../../controllers/userController');
+var _users = require('./users');
 
-var _userController2 = _interopRequireDefault(_userController);
+var _users2 = _interopRequireDefault(_users);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var router = _express2.default.Router();
 
-router.get('/index', _userController2.default.getUser);
+router.use('/users', _users2.default);
 
 exports.default = router;

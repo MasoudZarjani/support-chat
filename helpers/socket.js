@@ -38,8 +38,6 @@ class Socket {
                 });
             });
 
-            socket.on("GetUsersList", function (data) {});
-
             socket.on("disconnect", async () => {
                 socket.emit("chatListRes", {
                     userDisconnected: true,

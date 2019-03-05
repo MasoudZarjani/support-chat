@@ -20,13 +20,21 @@ var _http = require('http');
 
 var _http2 = _interopRequireDefault(_http);
 
-var _socket3 = require('./helpers/socket');
+var _bodyParser = require('body-parser');
 
-var _socket4 = _interopRequireDefault(_socket3);
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
 var _cors = require('cors');
 
 var _cors2 = _interopRequireDefault(_cors);
+
+var _socket3 = require('./helpers/socket');
+
+var _socket4 = _interopRequireDefault(_socket3);
+
+var _api = require('./routes/api');
+
+var _api2 = _interopRequireDefault(_api);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43,14 +51,19 @@ var Server = function () {
         (0, _db.mongodb)();
 
         this.app = (0, _express2.default)();
+        this.app.use(_bodyParser2.default.json());
+        this.app.use(_bodyParser2.default.urlencoded({
+            extended: true
+        }));
         this.app.use((0, _cors2.default)());
-        this.http = _http2.default.Server(this.app);
-        this.socket = (0, _socket2.default)(this.http);
-        this.app.get('/users', function (req, res) {
+        this.app.use(function (req, res, next) {
             res.set('Access-Control-Allow-Origin', req.headers.origin);
             res.set('Access-Control-Allow-Credentials', 'true');
-            res.send('Ok');
+            next();
         });
+        this.http = _http2.default.Server(this.app);
+        this.socket = (0, _socket2.default)(this.http);
+        this.app.use(_api2.default);
     }
 
     _createClass(Server, [{
