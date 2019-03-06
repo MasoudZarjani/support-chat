@@ -51,6 +51,7 @@ var Server = function () {
         (0, _db.mongodb)();
 
         this.app = (0, _express2.default)();
+        this.app.use('/assets', _express2.default.static(__dirname + '/assets'));
         this.app.use(_bodyParser2.default.json());
         this.app.use(_bodyParser2.default.urlencoded({
             extended: true

@@ -25,6 +25,7 @@ class Server {
         mongodb();
 
         this.app = express()
+        this.app.use('/assets', express.static(__dirname + '/assets'));
         this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({
             extended: true

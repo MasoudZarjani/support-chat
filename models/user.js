@@ -11,6 +11,9 @@ const UserSchema = new mongoose.Schema({
     token: {
         type: String
     },
+    avatar: {
+        type: String
+    },
     messages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message'

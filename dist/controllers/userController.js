@@ -24,8 +24,15 @@ var userController = function () {
         value: async function getUser(req, res, next) {
             try {
                 var UserList = [];
-                var Users = await _User2.default.find();
+                var Users = await _User2.default.find({
+                    token: {
+                        $ne: 'admin'
+                    }
+                });
                 Users.forEach(function (User) {
+                    if (typeof User.avatar === 'undefined') {
+                        User.avatar = process.env.APP_URL + "/assets/default-avatar.jpg";
+                    }
                     UserList.push({
                         id: User._id,
                         name: User.name + "  " + User.family,

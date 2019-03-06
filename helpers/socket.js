@@ -12,7 +12,6 @@ class Socket {
 
             //get messages list
             socket.on(`getMessages-${token}`, function (data) {
-                console.log(data)
                 messageController.getMessages(data.id).then(function (result) {
                     socket.emit(`sendMessages-${token}`, result);
                 })
@@ -26,8 +25,9 @@ class Socket {
 
             //send message from user to admins
             socket.on(`sendMessage-${token}`, function (data) {
-                console.log(data);
-                socket.emit(`getMessage-${token}`, data);
+                messageController.getMessage(data, token).then(function (result) {
+                    socket.emit(`getMessage-${token}`, result);
+                })
             });
 
             //get file and save in uploads folder

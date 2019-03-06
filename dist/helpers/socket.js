@@ -33,7 +33,6 @@ var Socket = function () {
 
                 //get messages list
                 socket.on('getMessages-' + token, function (data) {
-                    console.log(data);
                     _messageController2.default.getMessages(data.id).then(function (result) {
                         socket.emit('sendMessages-' + token, result);
                     });
@@ -47,8 +46,9 @@ var Socket = function () {
 
                 //send message from user to admins
                 socket.on('sendMessage-' + token, function (data) {
-                    console.log(data);
-                    socket.emit('getMessage-' + token, data);
+                    _messageController2.default.getMessage(data, token).then(function (result) {
+                        socket.emit('getMessage-' + token, result);
+                    });
                 });
 
                 //get file and save in uploads folder

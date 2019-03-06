@@ -24,6 +24,9 @@ var UserSchema = new _mongoose2.default.Schema({
     token: {
         type: String
     },
+    avatar: {
+        type: String
+    },
     messages: [{
         type: _mongoose2.default.Schema.Types.ObjectId,
         ref: 'Message'
