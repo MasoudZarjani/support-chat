@@ -18,7 +18,6 @@ class Socket {
                 })
             });
 
-
             //send message from admin to a user
             socket.on("sendMessage", function (data) {
                 let token = data.token;
