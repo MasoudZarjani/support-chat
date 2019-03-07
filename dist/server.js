@@ -52,9 +52,11 @@ var Server = function () {
 
         this.app = (0, _express2.default)();
         this.app.use('/assets', _express2.default.static(__dirname + '/assets'));
-        this.app.use(_bodyParser2.default.json());
         this.app.use(_bodyParser2.default.urlencoded({
-            extended: true
+            extended: false
+        }));
+        this.app.use(_bodyParser2.default.json({
+            type: 'application/json'
         }));
         this.app.use((0, _cors2.default)());
         this.app.use(function (req, res, next) {

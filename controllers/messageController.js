@@ -5,6 +5,7 @@ import constants from '../configs/constants';
 class messageController {
     async getMessages(id) {
         try {
+            console.log('asd')
             const {
                 message: {
                     receiver,

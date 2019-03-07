@@ -14,6 +14,10 @@ var _messageController = require('../controllers/messageController');
 
 var _messageController2 = _interopRequireDefault(_messageController);
 
+var _userController = require('../controllers/userController');
+
+var _userController2 = _interopRequireDefault(_userController);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31,8 +35,14 @@ var Socket = function () {
             this.io.on("connection", function (socket) {
                 var token = socket.handshake.query.token;
 
-                //get messages list
+                //get admin messages list
                 socket.on('getMessages-' + token, function (data) {
+                    if (typeof data.id === 'undefined') {
+                        user = _userController2.default.getUser(token);
+                        data = {
+                            id: user.id
+                        };
+                    }
                     _messageController2.default.getMessages(data.id).then(function (result) {
                         socket.emit('sendMessages-' + token, result);
                     });

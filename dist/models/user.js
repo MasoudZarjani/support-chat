@@ -27,6 +27,9 @@ var UserSchema = new _mongoose2.default.Schema({
     avatar: {
         type: String
     },
+    type: {
+        type: Number
+    },
     messages: [{
         type: _mongoose2.default.Schema.Types.ObjectId,
         ref: 'Message'

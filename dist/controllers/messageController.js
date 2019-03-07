@@ -31,6 +31,7 @@ var messageController = function () {
         key: 'getMessages',
         value: async function getMessages(id) {
             try {
+                console.log('asd');
                 var _constants$message = _constants2.default.message,
                     receiver = _constants$message.receiver,
                     sender = _constants$message.sender;
@@ -53,7 +54,15 @@ var messageController = function () {
                     MessageList.push({
                         id: message._id,
                         text: message.message,
-                        messageStatus: messageStatus
+                        createdAt: message.createdAt,
+                        messageStatus: messageStatus,
+                        type: 'text', //text, file, special
+                        file: {
+                            path: '',
+                            size: '',
+                            detail: ''
+                        },
+                        seen: 0
                     });
                 });
                 return MessageList;

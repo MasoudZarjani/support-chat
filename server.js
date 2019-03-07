@@ -26,10 +26,12 @@ class Server {
 
         this.app = express()
         this.app.use('/assets', express.static(__dirname + '/assets'));
-        this.app.use(bodyParser.json())
         this.app.use(bodyParser.urlencoded({
-            extended: true
-        }))
+            extended: false
+        }));
+        this.app.use(bodyParser.json({
+            type: 'application/json'
+        }));
         this.app.use(cors())
         this.app.use(function (req, res, next) {
             res.set('Access-Control-Allow-Origin', req.headers.origin)
