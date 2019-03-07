@@ -1,5 +1,6 @@
 import fs from 'fs'
 import messageController from '../controllers/messageController'
+import userController from '../controllers/userController'
 
 class Socket {
     constructor(socket) {
@@ -10,8 +11,14 @@ class Socket {
         this.io.on("connection", socket => {
             let token = socket.handshake.query.token;
 
-            //get messages list
+            //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
+                if(typeof data.id === 'undefined') {
+                    user = userController.getUser(token)
+                    data = {
+                        id: user.id
+                    }
+                }
                 messageController.getMessages(data.id).then(function (result) {
                     socket.emit(`sendMessages-${token}`, result);
                 })

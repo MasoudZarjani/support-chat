@@ -14,6 +14,9 @@ const UserSchema = new mongoose.Schema({
     avatar: {
         type: String
     },
+    type: {
+        type: Number
+    },
     messages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message'

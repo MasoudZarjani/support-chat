@@ -29,7 +29,15 @@ class messageController {
                 MessageList.push({
                     id: message._id,
                     text: message.message,
-                    messageStatus: messageStatus
+                    createdAt: message.createdAt,
+                    messageStatus: messageStatus,
+                    type: 'text', //text, file, special
+                    file: {
+                        path : '',
+                        size: '',
+                        detail: ''
+                    },
+                    seen: 0
                 })
             });
             return MessageList

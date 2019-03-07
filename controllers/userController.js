@@ -1,7 +1,17 @@
 import User from '../models/User';
 
 class userController {
-    async getUser(req, res, next) {
+    async getUser(token) {
+        try {
+            return await Users.findOne({token: token})
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
+    //api
+    async getUsers(req, res, next) {
         try {
             let UserList = []
             let Users = await User.find({
