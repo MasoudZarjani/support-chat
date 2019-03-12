@@ -31,6 +31,18 @@ var userController = function () {
                 return null;
             }
         }
+    }, {
+        key: 'getAdmin',
+        value: async function getAdmin() {
+            try {
+                return await _User2.default.findOne({
+                    token: "admin"
+                });
+            } catch (err) {
+                console.warn(err);
+                return null;
+            }
+        }
 
         //api
 
@@ -40,7 +52,6 @@ var userController = function () {
             try {
                 var user = new userController();
                 var userCheck = await user.getUser(req.body.token);
-                console.log(userCheck);
                 if (typeof userCheck === 'undefined' || userCheck == null) {
                     new _User2.default({
                         name: req.body.name,
@@ -51,14 +62,10 @@ var userController = function () {
                     }).save(function (err) {
                         if (err) throw err;
                     });
-                    res.json({
-                        status: true
-                    });
-                } else {
-                    res.json({
-                        status: true
-                    });
                 }
+                res.json({
+                    status: true
+                });
             } catch (err) {
                 res.status(500).json({
                     data: err.message,

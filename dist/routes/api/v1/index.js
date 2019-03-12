@@ -14,8 +14,11 @@ var _users2 = _interopRequireDefault(_users);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import messages from './messages'
+
 var router = _express2.default.Router();
 
 router.use('/users', _users2.default);
+//router.use('/messages', messages)
 
 exports.default = router;

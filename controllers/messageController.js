@@ -5,7 +5,6 @@ import constants from '../configs/constants';
 class messageController {
     async getMessages(id) {
         try {
-            console.log('asd')
             const {
                 message: {
                     receiver,
@@ -34,7 +33,7 @@ class messageController {
                     messageStatus: messageStatus,
                     type: 'text', //text, file, special
                     file: {
-                        path : '',
+                        path: '',
                         size: '',
                         detail: ''
                     },
@@ -50,17 +49,29 @@ class messageController {
 
     async getMessage(data, token) {
         try {
-            let user = await User.find({
+            let user = await User.findOne({
                 token
             });
-            new Message({
+            
+            if (typeof data.id === 'undefined') {
+                data.id = "5c7a5ccf1ffee71e5c1eff5d"
+            }
+            return new Message({
                 message: data.text,
                 from: user._id,
                 to: data.id
-            }).save(function (err) {
-                if (err) throw err;
-            });
-            return true;
+            }).save()
+
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
+    async getAllMessages() {
+        try {
+            let messages = await Message.find().sort('createdAt');
+            res.json(messages)
         } catch (err) {
             console.warn(err);
             return null;

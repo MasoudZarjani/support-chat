@@ -31,7 +31,6 @@ var messageController = function () {
         key: 'getMessages',
         value: async function getMessages(id) {
             try {
-                console.log('asd');
                 var _constants$message = _constants2.default.message,
                     receiver = _constants$message.receiver,
                     sender = _constants$message.sender;
@@ -75,17 +74,29 @@ var messageController = function () {
         key: 'getMessage',
         value: async function getMessage(data, token) {
             try {
-                var user = await _User2.default.find({
+                var user = await _User2.default.findOne({
                     token: token
                 });
-                new _Message2.default({
+
+                if (typeof data.id === 'undefined') {
+                    data.id = "5c7a5ccf1ffee71e5c1eff5d";
+                }
+                return new _Message2.default({
                     message: data.text,
                     from: user._id,
                     to: data.id
-                }).save(function (err) {
-                    if (err) throw err;
-                });
-                return true;
+                }).save();
+            } catch (err) {
+                console.warn(err);
+                return null;
+            }
+        }
+    }, {
+        key: 'getAllMessages',
+        value: async function getAllMessages() {
+            try {
+                var messages = await _Message2.default.find().sort('createdAt');
+                res.json(messages);
             } catch (err) {
                 console.warn(err);
                 return null;

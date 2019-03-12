@@ -12,6 +12,17 @@ class userController {
         }
     }
 
+    async getAdmin() {
+        try {
+            return await User.findOne({
+                token: "admin"
+            })
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
     //api
     async setUser(req, res) {
         try {
@@ -27,14 +38,10 @@ class userController {
                 }).save(function (err) {
                     if (err) throw err;
                 })
-                res.json({
-                    status: true
-                })
-            } else {
-                res.json({
-                    status: true
-                })
             }
+            res.json({
+                status: true
+            })
         } catch (err) {
             res.status(500).json({
                 data: err.message,

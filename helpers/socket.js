@@ -10,10 +10,11 @@ class Socket {
     socketEvents() {
         this.io.on("connection", socket => {
             let token = socket.handshake.query.token;
+            console.log(`connected: ${token}`);
 
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
-                if(typeof data.id === 'undefined') {
+                if (typeof data.id === 'undefined') {
                     user = userController.getUser(token)
                     data = {
                         id: user.id
@@ -26,6 +27,7 @@ class Socket {
 
             //send message from admin to a user
             socket.on("sendMessage", function (data) {
+                console.log(data)
                 let token = data.token;
                 socket.emit(`getMessage-${token}`, data);
             });
@@ -33,8 +35,15 @@ class Socket {
             //send message from user to admins
             socket.on(`sendMessage-${token}`, function (data) {
                 messageController.getMessage(data, token).then(function (result) {
-                    socket.emit(`getMessage-${token}`, result);
+                    socket.emit(`received-${token}`, {
+                        status: true
+                    })
+                    socket.emit(`getMessage-${token}`, {
+                        id: result._id,
+                        text: result.message,
+                    })
                 })
+
             });
 
             //get file and save in uploads folder

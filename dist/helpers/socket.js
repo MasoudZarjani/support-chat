@@ -34,6 +34,7 @@ var Socket = function () {
         value: function socketEvents() {
             this.io.on("connection", function (socket) {
                 var token = socket.handshake.query.token;
+                console.log('connected: ' + token);
 
                 //get admin messages list
                 socket.on('getMessages-' + token, function (data) {
@@ -50,6 +51,7 @@ var Socket = function () {
 
                 //send message from admin to a user
                 socket.on("sendMessage", function (data) {
+                    console.log(data);
                     var token = data.token;
                     socket.emit('getMessage-' + token, data);
                 });
@@ -57,7 +59,13 @@ var Socket = function () {
                 //send message from user to admins
                 socket.on('sendMessage-' + token, function (data) {
                     _messageController2.default.getMessage(data, token).then(function (result) {
-                        socket.emit('getMessage-' + token, result);
+                        socket.emit('received-' + token, {
+                            status: true
+                        });
+                        socket.emit('getMessage-' + token, {
+                            id: result._id,
+                            text: result.message
+                        });
                     });
                 });
 
