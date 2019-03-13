@@ -23,6 +23,17 @@ class userController {
         }
     }
 
+    async getToken(id) {
+        try {
+            return await User.findOne({
+                _id: id
+            })
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
     //api
     async setUser(req, res) {
         try {

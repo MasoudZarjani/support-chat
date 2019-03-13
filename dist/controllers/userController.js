@@ -43,6 +43,18 @@ var userController = function () {
                 return null;
             }
         }
+    }, {
+        key: 'getToken',
+        value: async function getToken(id) {
+            try {
+                return await _User2.default.findOne({
+                    _id: id
+                });
+            } catch (err) {
+                console.warn(err);
+                return null;
+            }
+        }
 
         //api
 

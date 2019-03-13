@@ -28,6 +28,12 @@ var MessageSchema = new _mongoose2.default.Schema({
     to: {
         type: _mongoose2.default.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    token: {
+        type: String
+    },
+    type: {
+        type: Number
     }
 });
 

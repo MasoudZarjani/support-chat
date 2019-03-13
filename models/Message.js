@@ -16,6 +16,12 @@ const MessageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    token: {
+        type: String,
+    },
+    type: {
+        type: Number,
+    },
 })
 
 MessageSchema.plugin(timestamps);

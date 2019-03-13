@@ -1,6 +1,9 @@
-import fs from 'fs'
-import messageController from '../controllers/messageController'
-import userController from '../controllers/userController'
+import fs from "fs";
+import messageController from "../controllers/messageController";
+import userController from "../controllers/userController";
+import Utility from "../helpers/utility";
+
+const utility = new Utility();
 
 class Socket {
     constructor(socket) {
@@ -8,42 +11,43 @@ class Socket {
     }
 
     socketEvents() {
-        this.io.on("connection", socket => {
+        let self = this.io
+        self.on("connection", socket => {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
 
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
-                if (typeof data.id === 'undefined') {
-                    user = userController.getUser(token)
+                if (typeof data.id === "undefined") {
+                    user = userController.getUser(token);
                     data = {
                         id: user.id
-                    }
+                    };
                 }
                 messageController.getMessages(data.id).then(function (result) {
                     socket.emit(`sendMessages-${token}`, result);
-                })
+                });
             });
 
-            //send message from admin to a user
-            socket.on("sendMessage", function (data) {
-                console.log(data)
-                let token = data.token;
-                socket.emit(`getMessage-${token}`, data);
-            });
-
-            //send message from user to admins
             socket.on(`sendMessage-${token}`, function (data) {
                 messageController.getMessage(data, token).then(function (result) {
-                    socket.emit(`received-${token}`, {
-                        status: true
-                    })
-                    socket.emit(`getMessage-${token}`, {
-                        id: result._id,
-                        text: result.message,
-                    })
-                })
-
+                    try {
+                        let userToken = result.token;
+                        self.emit(`getMessage-${userToken}`, {
+                            id: result._id,
+                            text: result.message,
+                            createdAt: utility.getPersianDate(result.createdAt),
+                            type: result.type,
+                            messageStatus: 0,
+                        });
+                        socket.emit(`received-${token}`, {
+                            id_msg: data.id_msg,
+                            status: true
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
             });
 
             //get file and save in uploads folder
@@ -52,12 +56,12 @@ class Socket {
                 data = data.image;
                 data = data.replace(/^data:image\/png;base64,/, "");
 
-                fs.writeFile("out.png", data, 'base64', function (err) {
+                fs.writeFile("out.png", data, "base64", function (err) {
                     console.log(err);
                 });
 
                 socket.emit(`getMessage-${token}`, {
-                    sendMessage: 'ok'
+                    sendMessage: "ok"
                 });
             });
 

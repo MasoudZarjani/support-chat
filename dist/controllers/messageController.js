@@ -79,12 +79,19 @@ var messageController = function () {
                 });
 
                 if (typeof data.id === 'undefined') {
-                    data.id = "5c7a5ccf1ffee71e5c1eff5d";
+                    data.id = "5c8621fbfa3a65776cda5377";
                 }
+
+                var userToken = await _User2.default.findOne({
+                    _id: data.id
+                });
+
                 return new _Message2.default({
                     message: data.text,
                     from: user._id,
-                    to: data.id
+                    to: data.id,
+                    type: data.type,
+                    token: userToken.token
                 }).save();
             } catch (err) {
                 console.warn(err);

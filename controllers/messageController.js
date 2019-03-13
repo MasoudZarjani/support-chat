@@ -31,12 +31,7 @@ class messageController {
                     text: message.message,
                     createdAt: message.createdAt,
                     messageStatus: messageStatus,
-                    type: 'text', //text, file, special
-                    file: {
-                        path: '',
-                        size: '',
-                        detail: ''
-                    },
+                    type: 0,
                     seen: 0
                 })
             });
@@ -54,12 +49,19 @@ class messageController {
             });
             
             if (typeof data.id === 'undefined') {
-                data.id = "5c7a5ccf1ffee71e5c1eff5d"
+                data.id = "5c8621fbfa3a65776cda5377"
             }
+
+            let userToken = await User.findOne({
+                _id: data.id
+            });
+
             return new Message({
                 message: data.text,
                 from: user._id,
-                to: data.id
+                to: data.id,
+                type: data.type,
+                token: userToken.token
             }).save()
 
         } catch (err) {
