@@ -26,8 +26,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var utility = new _utility2.default();
-
 var Socket = function () {
     function Socket(socket) {
         _classCallCheck(this, Socket);
@@ -49,7 +47,7 @@ var Socket = function () {
                             _messageController2.default.getMessages(result._id, data.page).then(function (res) {
                                 try {
                                     console.log(res);
-                                    socket.emit("sendMessages-" + token, res);
+                                    self.emit("sendAllMessage-" + token, res);
                                 } catch (err) {
                                     console.log(err);
                                 }
@@ -80,7 +78,7 @@ var Socket = function () {
                             self.emit("getMessage-" + userToken, {
                                 id: result._id,
                                 text: result.message,
-                                createdAt: utility.getPersianDate(result.createdAt),
+                                createdAt: _utility2.default.getPersianDate(result.createdAt),
                                 type: result.type,
                                 messageStatus: 1
                             });

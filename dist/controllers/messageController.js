@@ -30,8 +30,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var utility = new _utility2.default();
-
 var messageController = function () {
     function messageController() {
         _classCallCheck(this, messageController);
@@ -70,12 +68,13 @@ var messageController = function () {
                     return {
                         messageStatus: messageStatus,
                         id: item._id,
-                        createdAt: utility.getPersianDate(item.createdAt),
+                        createdAt: _utility2.default.getPersianDate(item.createdAt),
                         text: item.message,
                         type: item.type,
                         seen: item.seen
                     };
                 });
+                console.log(messages);
                 return messages;
             } catch (err) {
                 console.warn(err);

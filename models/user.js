@@ -17,6 +17,9 @@ const UserSchema = new mongoose.Schema({
     type: {
         type: Number
     },
+    onlineStatus: {
+        type: Number
+    },
     messages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Message'

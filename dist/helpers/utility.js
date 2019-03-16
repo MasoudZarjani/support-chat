@@ -38,4 +38,4 @@ var Utility = function () {
     return Utility;
 }();
 
-exports.default = Utility;
+exports.default = new Utility();

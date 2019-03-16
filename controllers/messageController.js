@@ -3,7 +3,6 @@ import User from '../models/User';
 import constants from '../configs/constants';
 import _ from 'lodash';
 import Utility from '../helpers/utility';
-const utility = new Utility();
 
 class messageController {
     async getMessages(id, page) {
@@ -39,10 +38,10 @@ class messageController {
                 return {
                     messageStatus: messageStatus,
                     id: item._id,
-                    createdAt: utility.getPersianDate(item.createdAt),
+                    createdAt: Utility.getPersianDate(item.createdAt),
                     text: item.message,
-                    type: item.type,
-                    seen: item.seen
+                    type: 0,
+                    seen: 0
                 }
             })
             return messages

@@ -14,4 +14,4 @@ class Utility {
     }
 }
 
-export default Utility;
+export default new Utility();

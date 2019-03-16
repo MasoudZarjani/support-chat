@@ -3,8 +3,6 @@ import messageController from "../controllers/messageController";
 import userController from "../controllers/userController";
 import Utility from "../helpers/utility";
 
-const utility = new Utility();
-
 class Socket {
     constructor(socket) {
         this.io = socket;
@@ -21,8 +19,8 @@ class Socket {
                     try {
                         messageController.getMessages(result._id, data.page).then(function (res) {
                             try {
-                                console.log(res)
-                                socket.emit(`sendMessages-${token}`, res);
+                                console.log(`sendAllMessage-${token}`)
+                                socket.emit(`sendAllMessage-${token}`, res);
                             } catch (err) {
                                 console.log(err);
                             }
@@ -53,7 +51,7 @@ class Socket {
                         self.emit(`getMessage-${userToken}`, {
                             id: result._id,
                             text: result.message,
-                            createdAt: utility.getPersianDate(result.createdAt),
+                            createdAt: Utility.getPersianDate(result.createdAt),
                             type: result.type,
                             messageStatus: 1,
                         });
