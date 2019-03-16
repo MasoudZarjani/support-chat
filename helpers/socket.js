@@ -16,6 +16,23 @@ class Socket {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
 
+            socket.on(`getAllMessage-${token}`, function (data) {
+                userController.getUser(token).then(function (result) {
+                    try {
+                        messageController.getMessages(result._id, data.page).then(function (res) {
+                            try {
+                                console.log(res)
+                                socket.emit(`sendMessages-${token}`, res);
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                })
+            });
+
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
                 if (typeof data.id === "undefined") {
@@ -24,7 +41,7 @@ class Socket {
                         id: user.id
                     };
                 }
-                messageController.getMessages(data.id).then(function (result) {
+                messageController.getMessages(data.id, data.page).then(function (result) {
                     socket.emit(`sendMessages-${token}`, result);
                 });
             });
@@ -38,7 +55,7 @@ class Socket {
                             text: result.message,
                             createdAt: utility.getPersianDate(result.createdAt),
                             type: result.type,
-                            messageStatus: 0,
+                            messageStatus: 1,
                         });
                         socket.emit(`received-${token}`, {
                             id_msg: data.id_msg,
@@ -49,6 +66,26 @@ class Socket {
                     }
                 });
             });
+
+            socket.on(`typing-${token}`, function (data) {
+                if (typeof data === 'undefined') {
+                    self.emit(`typing-admin`, {
+                        typing: null
+                    })
+                } else {
+                    let id = data.id
+                    userController.getToken(id).then(function (result) {
+                        try {
+                            let userToken = result.token
+                            console.log(userToken)
+                            self.emit(`typing-${userToken}`);
+                        } catch (err) {
+
+                        }
+                    })
+                }
+
+            })
 
             //get file and save in uploads folder
             socket.on(`sendFile-${token}`, function (data) {

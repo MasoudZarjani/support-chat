@@ -42,11 +42,22 @@ var Socket = function () {
             self.on("connection", function (socket) {
                 var token = socket.handshake.query.token;
                 console.log("connected: " + token);
-                socket.emit("getMessage-" + token, {
-                    id: 1,
-                    text: "asd",
-                    createdAt: "",
-                    type: 0
+
+                socket.on("getAllMessage-" + token, function (data) {
+                    _userController2.default.getUser(token).then(function (result) {
+                        try {
+                            _messageController2.default.getMessages(result._id, data.page).then(function (res) {
+                                try {
+                                    console.log(res);
+                                    socket.emit("sendMessages-" + token, res);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            });
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    });
                 });
 
                 //get admin messages list
@@ -57,7 +68,7 @@ var Socket = function () {
                             id: user.id
                         };
                     }
-                    _messageController2.default.getMessages(data.id).then(function (result) {
+                    _messageController2.default.getMessages(data.id, data.page).then(function (result) {
                         socket.emit("sendMessages-" + token, result);
                     });
                 });
@@ -70,7 +81,8 @@ var Socket = function () {
                                 id: result._id,
                                 text: result.message,
                                 createdAt: utility.getPersianDate(result.createdAt),
-                                type: result.type
+                                type: result.type,
+                                messageStatus: 1
                             });
                             socket.emit("received-" + token, {
                                 id_msg: data.id_msg,
@@ -80,6 +92,23 @@ var Socket = function () {
                             console.log(err);
                         }
                     });
+                });
+
+                socket.on("typing-" + token, function (data) {
+                    if (typeof data === 'undefined') {
+                        self.emit("typing-admin", {
+                            typing: null
+                        });
+                    } else {
+                        var id = data.id;
+                        _userController2.default.getToken(id).then(function (result) {
+                            try {
+                                var userToken = result.token;
+                                console.log(userToken);
+                                self.emit("typing-" + userToken);
+                            } catch (err) {}
+                        });
+                    }
                 });
 
                 //get file and save in uploads folder

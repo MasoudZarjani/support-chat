@@ -1,9 +1,12 @@
 import Message from '../models/Message';
 import User from '../models/User';
 import constants from '../configs/constants';
+import _ from 'lodash';
+import Utility from '../helpers/utility';
+const utility = new Utility();
 
 class messageController {
-    async getMessages(id) {
+    async getMessages(id, page) {
         try {
             const {
                 message: {
@@ -12,30 +15,37 @@ class messageController {
                 }
             } = constants;
             let messageStatus = 0;
-            let MessageList = [];
-            let messages = await Message.find({
+            var options = {
+                sort: {
+                    createdAt: -1
+                },
+                lean: true,
+                page: page,
+                limit: 10
+            };
+            let messages = await Message.paginate({
                 $or: [{
                     from: id
                 }, {
                     to: id
                 }]
-            }).sort('createdAt')
-            messages.forEach(message => {
-                if (message.from == id) {
+            }, options)
+            messages.docs = _.map(messages.docs, item => {
+                if (item.from == id) {
                     messageStatus = sender
                 } else {
                     messageStatus = receiver
                 }
-                MessageList.push({
-                    id: message._id,
-                    text: message.message,
-                    createdAt: message.createdAt,
+                return {
                     messageStatus: messageStatus,
-                    type: 0,
-                    seen: 0
-                })
-            });
-            return MessageList
+                    id: item._id,
+                    createdAt: utility.getPersianDate(item.createdAt),
+                    text: item.message,
+                    type: item.type,
+                    seen: item.seen
+                }
+            })
+            return messages
         } catch (err) {
             console.warn(err);
             return null;
@@ -47,7 +57,7 @@ class messageController {
             let user = await User.findOne({
                 token
             });
-            
+
             if (typeof data.id === 'undefined') {
                 data.id = "5c8621fbfa3a65776cda5377"
             }

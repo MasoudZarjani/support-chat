@@ -18,9 +18,19 @@ var _constants = require('../configs/constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _utility = require('../helpers/utility');
+
+var _utility2 = _interopRequireDefault(_utility);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var utility = new _utility2.default();
 
 var messageController = function () {
     function messageController() {
@@ -29,42 +39,44 @@ var messageController = function () {
 
     _createClass(messageController, [{
         key: 'getMessages',
-        value: async function getMessages(id) {
+        value: async function getMessages(id, page) {
             try {
                 var _constants$message = _constants2.default.message,
                     receiver = _constants$message.receiver,
                     sender = _constants$message.sender;
 
                 var messageStatus = 0;
-                var MessageList = [];
-                var messages = await _Message2.default.find({
+                var options = {
+                    sort: {
+                        createdAt: -1
+                    },
+                    lean: true,
+                    page: page,
+                    limit: 10
+                };
+                var messages = await _Message2.default.paginate({
                     $or: [{
                         from: id
                     }, {
                         to: id
                     }]
-                }).sort('createdAt');
-                messages.forEach(function (message) {
-                    if (message.from == id) {
+                }, options);
+                messages.docs = _lodash2.default.map(messages.docs, function (item) {
+                    if (item.from == id) {
                         messageStatus = sender;
                     } else {
                         messageStatus = receiver;
                     }
-                    MessageList.push({
-                        id: message._id,
-                        text: message.message,
-                        createdAt: message.createdAt,
+                    return {
                         messageStatus: messageStatus,
-                        type: 'text', //text, file, special
-                        file: {
-                            path: '',
-                            size: '',
-                            detail: ''
-                        },
-                        seen: 0
-                    });
+                        id: item._id,
+                        createdAt: utility.getPersianDate(item.createdAt),
+                        text: item.message,
+                        type: item.type,
+                        seen: item.seen
+                    };
                 });
-                return MessageList;
+                return messages;
             } catch (err) {
                 console.warn(err);
                 return null;

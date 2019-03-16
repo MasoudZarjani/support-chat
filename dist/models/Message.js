@@ -12,6 +12,10 @@ var _mongooseTimestamp = require('mongoose-timestamp');
 
 var _mongooseTimestamp2 = _interopRequireDefault(_mongooseTimestamp);
 
+var _mongoosePaginateV = require('mongoose-paginate-v2');
+
+var _mongoosePaginateV2 = _interopRequireDefault(_mongoosePaginateV);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MessageSchema = new _mongoose2.default.Schema({
@@ -34,9 +38,13 @@ var MessageSchema = new _mongoose2.default.Schema({
     },
     type: {
         type: Number
+    },
+    seen: {
+        type: Number
     }
 });
 
 MessageSchema.plugin(_mongooseTimestamp2.default);
+MessageSchema.plugin(_mongoosePaginateV2.default);
 
 exports.default = _mongoose2.default.model('Message', MessageSchema);

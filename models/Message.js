@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import timestamps from 'mongoose-timestamp'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const MessageSchema = new mongoose.Schema({
     title: {
@@ -22,8 +23,12 @@ const MessageSchema = new mongoose.Schema({
     type: {
         type: Number,
     },
+    seen: {
+        type: Number,
+    },
 })
 
 MessageSchema.plugin(timestamps);
+MessageSchema.plugin(mongoosePaginate);
 
 export default mongoose.model('Message', MessageSchema)
