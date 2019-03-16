@@ -14,5 +14,11 @@ exports.default = {
             sound: 3,
             special: 4 // for welcome message and date change
         }
+    },
+    user: {
+        onlineStatus: {
+            offline: 0,
+            online: 1
+        }
     }
 };

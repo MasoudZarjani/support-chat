@@ -55,6 +55,20 @@ var userController = function () {
                 return null;
             }
         }
+    }, {
+        key: 'onlineStatus',
+        value: async function onlineStatus(token, status) {
+            try {
+                return await _User2.default.updateOne({
+                    token: token
+                }, {
+                    onlineStatus: status
+                });
+            } catch (err) {
+                console.warn(err);
+                return null;
+            }
+        }
 
         //api
 
@@ -102,7 +116,8 @@ var userController = function () {
                     UserList.push({
                         id: User._id,
                         name: User.name + "  " + User.family,
-                        avatar: User.avatar
+                        avatar: User.avatar,
+                        onlineStatus: User.onlineStatus
                     });
                 });
                 res.json(UserList);

@@ -1,4 +1,5 @@
 import User from '../models/User';
+import constants from '../configs/constants';
 
 class userController {
     async getUser(token) {
@@ -34,6 +35,19 @@ class userController {
         }
     }
 
+    async onlineStatus(token, status) {
+        try {
+            return await User.updateOne({
+                token: token
+            }, {
+                onlineStatus: status
+            })
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
     //api
     async setUser(req, res) {
         try {
@@ -45,7 +59,8 @@ class userController {
                     family: req.body.family,
                     token: req.body.token,
                     avatar: req.body.avatar,
-                    type: req.body.type //user=0, admin=1
+                    type: req.body.type, //user=0, admin=1
+                    onlineStatus:constants.user.onlineStatus.online 
                 }).save(function (err) {
                     if (err) throw err;
                 })
@@ -76,7 +91,8 @@ class userController {
                 UserList.push({
                     id: User._id,
                     name: User.name + "  " + User.family,
-                    avatar: User.avatar
+                    avatar: User.avatar,
+                    onlineStatus: User.onlineStatus
                 })
             });
             res.json(UserList)
@@ -87,6 +103,7 @@ class userController {
             })
         }
     }
+
 }
 
 export default new userController();

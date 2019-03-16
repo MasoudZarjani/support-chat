@@ -70,11 +70,10 @@ var messageController = function () {
                         id: item._id,
                         createdAt: _utility2.default.getPersianDate(item.createdAt),
                         text: item.message,
-                        type: item.type,
-                        seen: item.seen
+                        type: 0,
+                        seen: 0
                     };
                 });
-                console.log(messages);
                 return messages;
             } catch (err) {
                 console.warn(err);

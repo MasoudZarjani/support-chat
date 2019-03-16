@@ -2,6 +2,7 @@ import fs from "fs";
 import messageController from "../controllers/messageController";
 import userController from "../controllers/userController";
 import Utility from "../helpers/utility";
+import constants from '../configs/constants';
 
 class Socket {
     constructor(socket) {
@@ -14,12 +15,13 @@ class Socket {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
 
+            userController.onlineStatus(token, constants.user.onlineStatus.online)
+
             socket.on(`getAllMessage-${token}`, function (data) {
                 userController.getUser(token).then(function (result) {
                     try {
                         messageController.getMessages(result._id, data.page).then(function (res) {
                             try {
-                                console.log(`sendAllMessage-${token}`)
                                 socket.emit(`sendAllMessage-${token}`, res);
                             } catch (err) {
                                 console.log(err);
@@ -101,6 +103,7 @@ class Socket {
             });
 
             socket.on("disconnect", async () => {
+                userController.onlineStatus(token, constants.user.onlineStatus.offline)
                 socket.emit("chatListRes", {
                     userDisconnected: true,
                     socket_id: socket.id

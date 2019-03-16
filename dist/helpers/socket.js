@@ -22,6 +22,10 @@ var _utility = require("../helpers/utility");
 
 var _utility2 = _interopRequireDefault(_utility);
 
+var _constants = require("../configs/constants");
+
+var _constants2 = _interopRequireDefault(_constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41,13 +45,14 @@ var Socket = function () {
                 var token = socket.handshake.query.token;
                 console.log("connected: " + token);
 
+                _userController2.default.onlineStatus(token, _constants2.default.user.onlineStatus.online);
+
                 socket.on("getAllMessage-" + token, function (data) {
                     _userController2.default.getUser(token).then(function (result) {
                         try {
                             _messageController2.default.getMessages(result._id, data.page).then(function (res) {
                                 try {
-                                    console.log(res);
-                                    self.emit("sendAllMessage-" + token, res);
+                                    socket.emit("sendAllMessage-" + token, res);
                                 } catch (err) {
                                     console.log(err);
                                 }
@@ -125,6 +130,7 @@ var Socket = function () {
                 });
 
                 socket.on("disconnect", async function () {
+                    _userController2.default.onlineStatus(token, _constants2.default.user.onlineStatus.offline);
                     socket.emit("chatListRes", {
                         userDisconnected: true,
                         socket_id: socket.id
