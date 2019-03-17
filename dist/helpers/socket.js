@@ -72,6 +72,7 @@ var Socket = function () {
                         };
                     }
                     _messageController2.default.getMessages(data.id, data.page).then(function (result) {
+                        console.log(result);
                         socket.emit("sendMessages-" + token, result);
                     });
                 });
@@ -131,10 +132,6 @@ var Socket = function () {
 
                 socket.on("disconnect", async function () {
                     _userController2.default.onlineStatus(token, _constants2.default.user.onlineStatus.offline);
-                    socket.emit("chatListRes", {
-                        userDisconnected: true,
-                        socket_id: socket.id
-                    });
                 });
             });
         }

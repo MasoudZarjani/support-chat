@@ -10,6 +10,10 @@ var _User = require('../models/User');
 
 var _User2 = _interopRequireDefault(_User);
 
+var _constants = require('../configs/constants');
+
+var _constants2 = _interopRequireDefault(_constants);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -84,7 +88,8 @@ var userController = function () {
                         family: req.body.family,
                         token: req.body.token,
                         avatar: req.body.avatar,
-                        type: req.body.type //user=0, admin=1
+                        type: req.body.type, //user=0, admin=1
+                        onlineStatus: _constants2.default.user.onlineStatus.online
                     }).save(function (err) {
                         if (err) throw err;
                     });

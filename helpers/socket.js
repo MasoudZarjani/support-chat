@@ -42,6 +42,7 @@ class Socket {
                     };
                 }
                 messageController.getMessages(data.id, data.page).then(function (result) {
+                    console.log(result)
                     socket.emit(`sendMessages-${token}`, result);
                 });
             });
@@ -104,10 +105,6 @@ class Socket {
 
             socket.on("disconnect", async () => {
                 userController.onlineStatus(token, constants.user.onlineStatus.offline)
-                socket.emit("chatListRes", {
-                    userDisconnected: true,
-                    socket_id: socket.id
-                });
             });
         });
     }
