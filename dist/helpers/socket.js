@@ -72,7 +72,6 @@ var Socket = function () {
                         };
                     }
                     _messageController2.default.getMessages(data.id, data.page).then(function (result) {
-                        console.log(result);
                         socket.emit("sendMessages-" + token, result);
                     });
                 });
@@ -84,7 +83,7 @@ var Socket = function () {
                             self.emit("getMessage-" + userToken, {
                                 id: result._id,
                                 text: result.message,
-                                createdAt: _utility2.default.getPersianDate(result.createdAt),
+                                createdAt: _utility2.default.getPersianTime(result.createdAt),
                                 type: result.type,
                                 messageStatus: 1
                             });

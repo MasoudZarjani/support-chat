@@ -33,6 +33,16 @@ var Utility = function () {
                 return (0, _momentJalaali2.default)(date).format('jD jMMMM jYYYY');
             }
         }
+    }, {
+        key: 'getPersianTime',
+        value: function getPersianTime(date) {
+            var now = new Date().toISOString().split("T")[1];
+            if (date == now) {
+                return (0, _momentJalaali2.default)(date).fromNow();
+            } else {
+                return (0, _momentJalaali2.default)(date).format('HH:mm');
+            }
+        }
     }]);
 
     return Utility;

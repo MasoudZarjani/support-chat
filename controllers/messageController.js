@@ -29,6 +29,7 @@ class messageController {
                     to: id
                 }]
             }, options)
+
             messages.docs = _.map(messages.docs, item => {
                 if (item.from == id) {
                     messageStatus = sender
@@ -38,10 +39,11 @@ class messageController {
                 return {
                     messageStatus: messageStatus,
                     id: item._id,
-                    createdAt: Utility.getPersianDate(item.createdAt),
+                    createdAt: Utility.getPersianTime(item.createdAt),
                     text: item.message,
                     type: 0,
-                    seen: 0
+                    seen: 0,
+                    date: Utility.getPersianDate(item.createdAt)
                 }
             })
             return messages
@@ -64,7 +66,8 @@ class messageController {
             let userToken = await User.findOne({
                 _id: data.id
             });
-
+            
+            
             return new Message({
                 message: data.text,
                 from: user._id,

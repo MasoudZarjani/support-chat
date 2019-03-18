@@ -42,7 +42,6 @@ class Socket {
                     };
                 }
                 messageController.getMessages(data.id, data.page).then(function (result) {
-                    console.log(result)
                     socket.emit(`sendMessages-${token}`, result);
                 });
             });
@@ -54,7 +53,7 @@ class Socket {
                         self.emit(`getMessage-${userToken}`, {
                             id: result._id,
                             text: result.message,
-                            createdAt: Utility.getPersianDate(result.createdAt),
+                            createdAt: Utility.getPersianTime(result.createdAt),
                             type: result.type,
                             messageStatus: 1,
                         });

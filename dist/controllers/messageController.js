@@ -59,6 +59,7 @@ var messageController = function () {
                         to: id
                     }]
                 }, options);
+
                 messages.docs = _lodash2.default.map(messages.docs, function (item) {
                     if (item.from == id) {
                         messageStatus = sender;
@@ -68,10 +69,11 @@ var messageController = function () {
                     return {
                         messageStatus: messageStatus,
                         id: item._id,
-                        createdAt: _utility2.default.getPersianDate(item.createdAt),
+                        createdAt: _utility2.default.getPersianTime(item.createdAt),
                         text: item.message,
                         type: 0,
-                        seen: 0
+                        seen: 0,
+                        date: _utility2.default.getPersianDate(item.createdAt)
                     };
                 });
                 return messages;
