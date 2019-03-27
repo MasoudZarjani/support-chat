@@ -17,6 +17,9 @@ const MessageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    chat_title_id: {
+        type: Number,
+    },
     token: {
         type: String,
     },

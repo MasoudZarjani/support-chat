@@ -5,7 +5,7 @@ import _ from 'lodash';
 import Utility from '../helpers/utility';
 
 class messageController {
-    async getMessages(id, page) {
+    async getMessages(id, page, chat_title_id) {
         try {
             const {
                 message: {
@@ -23,11 +23,7 @@ class messageController {
                 limit: 10
             };
             let messages = await Message.paginate({
-                $or: [{
-                    from: id
-                }, {
-                    to: id
-                }]
+                chat_title_id: chat_title_id,
             }, options)
 
             messages.docs = _.map(messages.docs, item => {
@@ -53,7 +49,7 @@ class messageController {
         }
     }
 
-    async getMessage(data, token) {
+    async setMessage(data, token) {
         try {
             let user = await User.findOne({
                 token

@@ -23,7 +23,7 @@ const {
 class Server {
     constructor() {
         mongodb();
-
+        //mysqldb();
         this.app = express()
         this.app.use('/assets', express.static(__dirname + '/assets'));
         this.app.use(bodyParser.urlencoded({

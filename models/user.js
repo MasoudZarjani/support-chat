@@ -2,6 +2,9 @@ import mongoose from 'mongoose'
 import timestamps from 'mongoose-timestamp'
 
 const UserSchema = new mongoose.Schema({
+    user_id: {
+        type: Number
+    },
     name: {
         type: String
     },

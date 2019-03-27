@@ -20,7 +20,7 @@ class Socket {
             socket.on(`getAllMessage-${token}`, function (data) {
                 userController.getUser(token).then(function (result) {
                     try {
-                        messageController.getMessages(result._id, data.page).then(function (res) {
+                        messageController.getMessages(result._id, data.page, data.chat_title_id).then(function (res) {
                             try {
                                 socket.emit(`sendAllMessage-${token}`, res);
                             } catch (err) {
@@ -47,7 +47,7 @@ class Socket {
             });
 
             socket.on(`sendMessage-${token}`, function (data) {
-                messageController.getMessage(data, token).then(function (result) {
+                messageController.setMessage(data, token).then(function (result) {
                     try {
                         let userToken = result.token;
                         self.emit(`getMessage-${userToken}`, {
