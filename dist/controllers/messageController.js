@@ -37,7 +37,7 @@ var messageController = function () {
 
     _createClass(messageController, [{
         key: 'getMessages',
-        value: async function getMessages(id, page) {
+        value: async function getMessages(id, page, chat_title_id) {
             try {
                 var _constants$message = _constants2.default.message,
                     receiver = _constants$message.receiver,
@@ -53,11 +53,7 @@ var messageController = function () {
                     limit: 10
                 };
                 var messages = await _Message2.default.paginate({
-                    $or: [{
-                        from: id
-                    }, {
-                        to: id
-                    }]
+                    chat_title_id: chat_title_id
                 }, options);
 
                 messages.docs = _lodash2.default.map(messages.docs, function (item) {
@@ -83,8 +79,8 @@ var messageController = function () {
             }
         }
     }, {
-        key: 'getMessage',
-        value: async function getMessage(data, token) {
+        key: 'setMessage',
+        value: async function setMessage(data, token) {
             try {
                 var user = await _User2.default.findOne({
                     token: token
@@ -99,6 +95,7 @@ var messageController = function () {
                 });
 
                 return new _Message2.default({
+                    chat_title_id: data.chat_title_id,
                     message: data.text,
                     from: user._id,
                     to: data.id,

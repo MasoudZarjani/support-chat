@@ -50,7 +50,7 @@ var Socket = function () {
                 socket.on("getAllMessage-" + token, function (data) {
                     _userController2.default.getUser(token).then(function (result) {
                         try {
-                            _messageController2.default.getMessages(result._id, data.page).then(function (res) {
+                            _messageController2.default.getMessages(result._id, data.page, data.chat_title_id).then(function (res) {
                                 try {
                                     socket.emit("sendAllMessage-" + token, res);
                                 } catch (err) {
@@ -77,7 +77,7 @@ var Socket = function () {
                 });
 
                 socket.on("sendMessage-" + token, function (data) {
-                    _messageController2.default.getMessage(data, token).then(function (result) {
+                    _messageController2.default.setMessage(data, token).then(function (result) {
                         try {
                             var userToken = result.token;
                             self.emit("getMessage-" + userToken, {

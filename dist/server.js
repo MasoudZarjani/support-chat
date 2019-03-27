@@ -49,7 +49,7 @@ var Server = function () {
         _classCallCheck(this, Server);
 
         (0, _db.mongodb)();
-        (0, _db.mysqldb)();
+        //mysqldb();
         this.app = (0, _express2.default)();
         this.app.use('/assets', _express2.default.static(__dirname + '/assets'));
         this.app.use(_bodyParser2.default.urlencoded({

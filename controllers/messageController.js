@@ -65,6 +65,7 @@ class messageController {
             
             
             return new Message({
+                chat_title_id: data.chat_title_id,
                 message: data.text,
                 from: user._id,
                 to: data.id,
