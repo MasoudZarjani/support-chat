@@ -15,14 +15,14 @@ class Socket {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
 
-            userController.onlineStatus(token, constants.user.onlineStatus.online)
+            //userController.onlineStatus(token, constants.user.onlineStatus.online)
 
             socket.on(`getAllMessage-${token}`, function (data) {
-                userController.getUser(token).then(function (result) {
+                userController.getUserApi(token).then(function (result) {
                     try {
-                        messageController.getMessages(result._id, data.page, data.chat_title_id).then(function (res) {
+                        messageController.getMessages(result.id, data.page, data.chat_title_id).then(function (res) {
                             try {
-                                socket.emit(`sendAllMessage-${token}`, res);
+                                console.log(socket.emit(`sendAllMessage-${token}`, res))
                             } catch (err) {
                                 console.log(err);
                             }
@@ -35,18 +35,23 @@ class Socket {
 
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
-                if (typeof data.id === "undefined") {
-                    user = userController.getUser(token);
-                    data = {
-                        id: user.id
-                    };
-                }
-                messageController.getMessages(data.id, data.page).then(function (result) {
-                    socket.emit(`sendMessages-${token}`, result);
-                });
+                userController.getUserApi(data.userToken).then(function (result) {
+                    try {                        
+                        messageController.getMessages(result, data.page, data.chat_title_id).then(function (res) {
+                            try {
+                                socket.emit(`sendMessages-${token}`, res);
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                })
             });
 
             socket.on(`sendMessage-${token}`, function (data) {
+                console.log(data)
                 messageController.setMessage(data, token).then(function (result) {
                     try {
                         let userToken = result.token;
@@ -57,6 +62,7 @@ class Socket {
                             type: result.type,
                             messageStatus: 1,
                         });
+                        console.log(data.id_msg)
                         socket.emit(`received-${token}`, {
                             id_msg: data.id_msg,
                             status: true
@@ -103,7 +109,7 @@ class Socket {
             });
 
             socket.on("disconnect", async () => {
-                userController.onlineStatus(token, constants.user.onlineStatus.offline)
+                //userController.onlineStatus(token, constants.user.onlineStatus.offline)
             });
         });
     }

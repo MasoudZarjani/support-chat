@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/MasoudZarjani/support-chat#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "body-parser": "^1.18.3",
     "braces": "^2.3.2",
     "cors": "^2.8.5",

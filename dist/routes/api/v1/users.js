@@ -16,7 +16,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var router = _express2.default.Router();
 
-router.get('/index', _userController2.default.getUsers);
-router.post('/register', _userController2.default.setUser);
+router.get('/index', _userController2.default.getUsersApi);
+router.get('/admin/info', _userController2.default.getAdminInfoApi);
+router.get('/chat_titles/:token', _userController2.default.getChatTitlesApi);
 
 exports.default = router;

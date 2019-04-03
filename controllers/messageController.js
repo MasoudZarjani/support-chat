@@ -3,6 +3,7 @@ import User from '../models/User';
 import constants from '../configs/constants';
 import _ from 'lodash';
 import Utility from '../helpers/utility';
+import userController from './userController';
 
 class messageController {
     async getMessages(id, page, chat_title_id) {
@@ -25,7 +26,6 @@ class messageController {
             let messages = await Message.paginate({
                 chat_title_id: chat_title_id,
             }, options)
-
             messages.docs = _.map(messages.docs, item => {
                 if (item.from == id) {
                     messageStatus = sender
@@ -51,26 +51,16 @@ class messageController {
 
     async setMessage(data, token) {
         try {
-            let user = await User.findOne({
-                token
-            });
-
-            if (typeof data.id === 'undefined') {
-                data.id = "5c8621fbfa3a65776cda5377"
-            }
-
-            let userToken = await User.findOne({
-                _id: data.id
-            });
-            
-            
+            let from = await userController.getUserApi(token);
+            console.log(from);
+            let to = await userController.getUserApi(data.token);
+            console.log(to);
             return new Message({
                 chat_title_id: data.chat_title_id,
                 message: data.text,
-                from: user._id,
-                to: data.id,
+                from: from,
+                to: to,
                 type: data.type,
-                token: userToken.token
             }).save()
 
         } catch (err) {

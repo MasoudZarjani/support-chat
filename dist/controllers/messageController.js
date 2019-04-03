@@ -26,6 +26,10 @@ var _utility = require('../helpers/utility');
 
 var _utility2 = _interopRequireDefault(_utility);
 
+var _userController = require('./userController');
+
+var _userController2 = _interopRequireDefault(_userController);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55,7 +59,6 @@ var messageController = function () {
                 var messages = await _Message2.default.paginate({
                     chat_title_id: chat_title_id
                 }, options);
-
                 messages.docs = _lodash2.default.map(messages.docs, function (item) {
                     if (item.from == id) {
                         messageStatus = sender;
@@ -82,25 +85,16 @@ var messageController = function () {
         key: 'setMessage',
         value: async function setMessage(data, token) {
             try {
-                var user = await _User2.default.findOne({
-                    token: token
-                });
-
-                if (typeof data.id === 'undefined') {
-                    data.id = "5c8621fbfa3a65776cda5377";
-                }
-
-                var userToken = await _User2.default.findOne({
-                    _id: data.id
-                });
-
+                var from = await _userController2.default.getUserApi(token);
+                console.log(from);
+                var to = await _userController2.default.getUserApi(data.token);
+                console.log(to);
                 return new _Message2.default({
                     chat_title_id: data.chat_title_id,
                     message: data.text,
-                    from: user._id,
-                    to: data.id,
-                    type: data.type,
-                    token: userToken.token
+                    from: from,
+                    to: to,
+                    type: data.type
                 }).save();
             } catch (err) {
                 console.warn(err);

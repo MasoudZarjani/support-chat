@@ -26,12 +26,10 @@ var MessageSchema = new _mongoose2.default.Schema({
         type: String
     },
     from: {
-        type: _mongoose2.default.Schema.Types.ObjectId,
-        ref: 'User'
+        type: Number
     },
     to: {
-        type: _mongoose2.default.Schema.Types.ObjectId,
-        ref: 'User'
+        type: Number
     },
     chat_title_id: {
         type: Number

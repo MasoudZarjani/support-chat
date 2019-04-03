@@ -45,14 +45,14 @@ var Socket = function () {
                 var token = socket.handshake.query.token;
                 console.log("connected: " + token);
 
-                _userController2.default.onlineStatus(token, _constants2.default.user.onlineStatus.online);
+                //userController.onlineStatus(token, constants.user.onlineStatus.online)
 
                 socket.on("getAllMessage-" + token, function (data) {
-                    _userController2.default.getUser(token).then(function (result) {
+                    _userController2.default.getUserApi(token).then(function (result) {
                         try {
-                            _messageController2.default.getMessages(result._id, data.page, data.chat_title_id).then(function (res) {
+                            _messageController2.default.getMessages(result.id, data.page, data.chat_title_id).then(function (res) {
                                 try {
-                                    socket.emit("sendAllMessage-" + token, res);
+                                    console.log(socket.emit("sendAllMessage-" + token, res));
                                 } catch (err) {
                                     console.log(err);
                                 }
@@ -65,18 +65,23 @@ var Socket = function () {
 
                 //get admin messages list
                 socket.on("getMessages-" + token, function (data) {
-                    if (typeof data.id === "undefined") {
-                        user = _userController2.default.getUser(token);
-                        data = {
-                            id: user.id
-                        };
-                    }
-                    _messageController2.default.getMessages(data.id, data.page).then(function (result) {
-                        socket.emit("sendMessages-" + token, result);
+                    _userController2.default.getUserApi(data.userToken).then(function (result) {
+                        try {
+                            _messageController2.default.getMessages(result, data.page, data.chat_title_id).then(function (res) {
+                                try {
+                                    socket.emit("sendMessages-" + token, res);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            });
+                        } catch (err) {
+                            console.log(err);
+                        }
                     });
                 });
 
                 socket.on("sendMessage-" + token, function (data) {
+                    console.log(data);
                     _messageController2.default.setMessage(data, token).then(function (result) {
                         try {
                             var userToken = result.token;
@@ -87,6 +92,7 @@ var Socket = function () {
                                 type: result.type,
                                 messageStatus: 1
                             });
+                            console.log(data.id_msg);
                             socket.emit("received-" + token, {
                                 id_msg: data.id_msg,
                                 status: true
@@ -130,7 +136,7 @@ var Socket = function () {
                 });
 
                 socket.on("disconnect", async function () {
-                    _userController2.default.onlineStatus(token, _constants2.default.user.onlineStatus.offline);
+                    //userController.onlineStatus(token, constants.user.onlineStatus.offline)
                 });
             });
         }

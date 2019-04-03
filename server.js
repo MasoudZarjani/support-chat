@@ -19,7 +19,6 @@ const {
     }
 } = config;
 
-
 class Server {
     constructor() {
         mongodb();

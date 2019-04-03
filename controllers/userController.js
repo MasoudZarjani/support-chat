@@ -1,7 +1,59 @@
 import User from '../models/User';
 import constants from '../configs/constants';
-
+import axios from 'axios';
 class userController {
+    async getUserApi(token) {
+        return await axios.post('http://app.mahanteymouri.ir/mahant-api/private/getUserId', {
+                token: token
+            })
+            .then(function (response) {
+                // handle success
+                if (response.data.status === true)
+                    return response.data.id
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
+    async getUsersApi(req, res, next) {
+        await axios.post('http://app.mahanteymouri.ir/mahant-api/private/getAllUserHastChat', {
+                token: 'iZQEbfTRBNGke1wxuQS65oJQRTcGh08no3XBHle31AhvPRen7BhsyycQqKFaKYsvVu15SIf1ZMcLuIcz2TR0oKCA5LTS4df2g2XsZ44xs44PhqzeJv9us8CTGvyZUaOELKgrfEZ1siQPp8YRzGnp3f'
+            })
+            .then(function (response) {
+                if (response.data.status === true)
+                    res.send(response.data.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    async getChatTitlesApi(req, res, next) {
+        await axios.post('http://app.mahanteymouri.ir/mahant-api/v1/getChatTitles', {
+                token: req.params.token
+            })
+            .then(function (response) {
+                if (response.data.status === true)
+                    res.send(response.data.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    async getAdminInfoApi(req, res, next) {
+        await axios.get('http://app.mahanteymouri.ir/mahant/get-info')
+            .then(function (response) {
+                if (response.data.status === true)
+                    res.send(response.data.data)
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
     async getUser(token) {
         try {
             return await User.findOne({
@@ -60,7 +112,7 @@ class userController {
                     token: req.body.token,
                     avatar: req.body.avatar,
                     type: req.body.type, //user=0, admin=1
-                    onlineStatus:constants.user.onlineStatus.online 
+                    onlineStatus: constants.user.onlineStatus.online
                 }).save(function (err) {
                     if (err) throw err;
                 })
