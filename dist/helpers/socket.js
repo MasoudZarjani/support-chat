@@ -80,6 +80,20 @@ var Socket = function () {
                     });
                 });
 
+                socket.on("sendImage-" + token, function (data) {
+                    var fileName = __dirname + '/../../uploads/' + data.imageName;
+
+                    _fs2.default.open(fileName, 'a', function (err, fd) {
+                        if (err) throw err;
+
+                        _fs2.default.write(fd, data.filePath, null, 'Binary', function (err, written, buff) {
+                            _fs2.default.close(fd, function () {
+                                console.log('File saved successful!');
+                            });
+                        });
+                    });
+                });
+
                 socket.on("sendMessage-" + token, function (data) {
                     console.log(data);
                     _messageController2.default.setMessage(data, token).then(function (result) {
@@ -104,7 +118,7 @@ var Socket = function () {
                 });
 
                 socket.on("typing-" + token, function (data) {
-                    if (typeof data === 'undefined') {
+                    if (typeof data === "undefined") {
                         self.emit("typing-admin", {
                             typing: null
                         });

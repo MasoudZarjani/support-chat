@@ -2,7 +2,7 @@ import fs from "fs";
 import messageController from "../controllers/messageController";
 import userController from "../controllers/userController";
 import Utility from "../helpers/utility";
-import constants from '../configs/constants';
+import constants from "../configs/constants";
 
 class Socket {
     constructor(socket) {
@@ -10,7 +10,7 @@ class Socket {
     }
 
     socketEvents() {
-        let self = this.io
+        let self = this.io;
         self.on("connection", socket => {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
@@ -20,38 +20,56 @@ class Socket {
             socket.on(`getAllMessage-${token}`, function (data) {
                 userController.getUserApi(token).then(function (result) {
                     try {
-                        messageController.getMessages(result.id, data.page, data.chat_title_id).then(function (res) {
-                            try {
-                                console.log(socket.emit(`sendAllMessage-${token}`, res))
-                            } catch (err) {
-                                console.log(err);
-                            }
-                        });
+                        messageController
+                            .getMessages(result.id, data.page, data.chat_title_id)
+                            .then(function (res) {
+                                try {
+                                    console.log(socket.emit(`sendAllMessage-${token}`, res));
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            });
                     } catch (err) {
                         console.log(err);
                     }
-                })
+                });
             });
 
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
                 userController.getUserApi(data.userToken).then(function (result) {
-                    try {                        
-                        messageController.getMessages(result, data.page, data.chat_title_id).then(function (res) {
-                            try {
-                                socket.emit(`sendMessages-${token}`, res);
-                            } catch (err) {
-                                console.log(err);
-                            }
-                        });
+                    try {
+                        messageController
+                            .getMessages(result, data.page, data.chat_title_id)
+                            .then(function (res) {
+                                try {
+                                    socket.emit(`sendMessages-${token}`, res);
+                                } catch (err) {
+                                    console.log(err);
+                                }
+                            });
                     } catch (err) {
                         console.log(err);
                     }
-                })
+                });
+            });
+
+            socket.on(`sendImage-${token}`, function (data) {
+                var fileName = __dirname + '/../../uploads/' + data.imageName;
+
+                fs.open(fileName, 'a', function (err, fd) {
+                    if (err) throw err;
+
+                    fs.write(fd, data.filePath, null, 'Binary', function (err, written, buff) {
+                        fs.close(fd, function () {
+                            console.log('File saved successful!');
+                        });
+                    })
+                });
             });
 
             socket.on(`sendMessage-${token}`, function (data) {
-                console.log(data)
+                console.log(data);
                 messageController.setMessage(data, token).then(function (result) {
                     try {
                         let userToken = result.token;
@@ -60,9 +78,9 @@ class Socket {
                             text: result.message,
                             createdAt: Utility.getPersianTime(result.createdAt),
                             type: result.type,
-                            messageStatus: 1,
+                            messageStatus: 1
                         });
-                        console.log(data.id_msg)
+                        console.log(data.id_msg);
                         socket.emit(`received-${token}`, {
                             id_msg: data.id_msg,
                             status: true
@@ -74,24 +92,21 @@ class Socket {
             });
 
             socket.on(`typing-${token}`, function (data) {
-                if (typeof data === 'undefined') {
+                if (typeof data === "undefined") {
                     self.emit(`typing-admin`, {
                         typing: null
-                    })
+                    });
                 } else {
-                    let id = data.id
+                    let id = data.id;
                     userController.getToken(id).then(function (result) {
                         try {
-                            let userToken = result.token
-                            console.log(userToken)
+                            let userToken = result.token;
+                            console.log(userToken);
                             self.emit(`typing-${userToken}`);
-                        } catch (err) {
-
-                        }
-                    })
+                        } catch (err) {}
+                    });
                 }
-
-            })
+            });
 
             //get file and save in uploads folder
             socket.on(`sendFile-${token}`, function (data) {

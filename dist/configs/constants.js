@@ -5,8 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
     message: {
-        receiver: 0,
-        sender: 1,
+        sender: 0,
+        receiver: 1,
         type: {
             text: 0,
             image: 1,
