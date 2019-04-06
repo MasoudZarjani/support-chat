@@ -87,9 +87,21 @@ var Socket = function () {
                         if (err) throw err;
 
                         _fs2.default.write(fd, data.filePath, null, 'Binary', function (err, written, buff) {
-                            _fs2.default.close(fd, function () {
-                                console.log('File saved successful!');
-                            });
+                            try {
+                                _fs2.default.close(fd, function () {
+                                    _messageController2.default.setMessage(data, token).then(function (res) {
+                                        try {
+                                            socket.emit("ImageStatus-" + token, {
+                                                'status': true
+                                            });
+                                        } catch (err) {
+                                            socket.emit("ImageStatus-" + token, err);
+                                        }
+                                    });
+                                });
+                            } catch (err) {
+                                socket.emit("ImageStatus-" + token, err);
+                            }
                         });
                     });
                 });

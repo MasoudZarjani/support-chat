@@ -61,11 +61,26 @@ class Socket {
                     if (err) throw err;
 
                     fs.write(fd, data.filePath, null, 'Binary', function (err, written, buff) {
-                        fs.close(fd, function () {
-                            console.log('File saved successful!');
-                        });
+                        try {
+                            fs.close(fd, function () {
+                                messageController
+                                    .setMessage(data, token)
+                                    .then(function (res) {
+                                        try {
+                                            socket.emit(`ImageStatus-${token}`, {
+                                                'status': true
+                                            });
+                                        } catch (err) {
+                                            socket.emit(`ImageStatus-${token}`, err);
+                                        }
+                                    });
+                            });
+                        } catch (err) {
+                            socket.emit(`ImageStatus-${token}`, err);
+                        }
                     })
                 });
+
             });
 
             socket.on(`sendMessage-${token}`, function (data) {
