@@ -7,13 +7,14 @@ const MessageSchema = new mongoose.Schema({
         type: String
     },
     message: {
-        type: String
+        type: String,
+        default: '',
     },
     from: {
-        type: Number,
+        type: String,
     },
     to: {
-        type: Number,
+        type: String,
     },
     chat_title_id: {
         type: Number,
@@ -21,11 +22,27 @@ const MessageSchema = new mongoose.Schema({
     token: {
         type: String,
     },
+    file: {
+        path: {
+            type: String,
+            default: '',
+        },
+        mime: {
+            type: String,
+            default: '',
+        },
+        size: {
+            type: Number,
+            default: 0,
+        },
+    },
     type: {
         type: Number,
+        default: 0,
     },
     seen: {
         type: Number,
+        default: 0,
     },
 })
 

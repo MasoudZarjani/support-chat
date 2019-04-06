@@ -70,8 +70,9 @@ var messageController = function () {
                         id: item._id,
                         createdAt: _utility2.default.getPersianTime(item.createdAt),
                         text: item.message,
-                        type: 0,
-                        seen: 0,
+                        type: item.type,
+                        seen: item.seen,
+                        file: item.file,
                         date: _utility2.default.getPersianDate(item.createdAt)
                     };
                 });
@@ -85,17 +86,36 @@ var messageController = function () {
         key: 'setMessage',
         value: async function setMessage(data, token) {
             try {
+                console.log(data);
                 var from = await _userController2.default.getUserApi(token);
-                console.log(from);
-                var to = await _userController2.default.getUserApi(data.token);
-                console.log(to);
-                return new _Message2.default({
-                    chat_title_id: data.chat_title_id,
-                    message: data.text,
-                    from: from,
-                    to: to,
-                    type: data.type
-                }).save();
+                console.log({ from: from });
+                var to = await _userController2.default.getUserApi(data.userToken);
+                console.log({ to: to });
+
+                if (data.type == 0) {
+                    return new _Message2.default({
+                        chat_title_id: data.chat_title_id,
+                        message: data.text,
+                        from: from,
+                        to: to,
+                        type: data.type,
+                        seen: 0
+                    }).save();
+                } else if (data.type == 1) {
+                    return new _Message2.default({
+                        chat_title_id: data.chat_title_id,
+                        message: data.text,
+                        from: from,
+                        to: to,
+                        type: data.type,
+                        file: {
+                            path: data.fileName,
+                            mime: data.fileType,
+                            size: data.fileSize
+                        },
+                        seen: 0
+                    }).save();
+                }
             } catch (err) {
                 console.warn(err);
                 return null;

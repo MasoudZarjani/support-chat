@@ -23,7 +23,8 @@ var MessageSchema = new _mongoose2.default.Schema({
         type: String
     },
     message: {
-        type: String
+        type: String,
+        default: ''
     },
     from: {
         type: Number
@@ -37,11 +38,27 @@ var MessageSchema = new _mongoose2.default.Schema({
     token: {
         type: String
     },
+    file: {
+        path: {
+            type: String,
+            default: ''
+        },
+        mime: {
+            type: String,
+            default: ''
+        },
+        size: {
+            type: Number,
+            default: 0
+        }
+    },
     type: {
-        type: Number
+        type: Number,
+        default: 0
     },
     seen: {
-        type: Number
+        type: Number,
+        default: 0
     }
 });
 

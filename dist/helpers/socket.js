@@ -26,6 +26,10 @@ var _constants = require("../configs/constants");
 
 var _constants2 = _interopRequireDefault(_constants);
 
+var _lodash = require("lodash");
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46,13 +50,12 @@ var Socket = function () {
                 console.log("connected: " + token);
 
                 //userController.onlineStatus(token, constants.user.onlineStatus.online)
-
                 socket.on("getAllMessage-" + token, function (data) {
                     _userController2.default.getUserApi(token).then(function (result) {
                         try {
                             _messageController2.default.getMessages(result.id, data.page, data.chat_title_id).then(function (res) {
                                 try {
-                                    console.log(socket.emit("sendAllMessage-" + token, res));
+                                    socket.emit("sendAllMessage-" + token, res);
                                 } catch (err) {
                                     console.log(err);
                                 }
@@ -81,8 +84,11 @@ var Socket = function () {
                 });
 
                 socket.on("sendImage-" + token, function (data) {
-                    var fileName = __dirname + '/../../uploads/' + data.imageName;
+                    var fileReader = new FileReader(),
+                        slice = file.slice(0, 100000);
 
+                    var fileName = 'http://localhost:3000/../../uploads/' + _lodash2.default.random(1000000000, 9999999999) + '_' + data.imageName;
+                    data.fileName = fileName;
                     _fs2.default.open(fileName, 'a', function (err, fd) {
                         if (err) throw err;
 
@@ -107,7 +113,6 @@ var Socket = function () {
                 });
 
                 socket.on("sendMessage-" + token, function (data) {
-                    console.log(data);
                     _messageController2.default.setMessage(data, token).then(function (result) {
                         try {
                             var userToken = result.token;
@@ -118,7 +123,6 @@ var Socket = function () {
                                 type: result.type,
                                 messageStatus: 1
                             });
-                            console.log(data.id_msg);
                             socket.emit("received-" + token, {
                                 id_msg: data.id_msg,
                                 status: true
@@ -139,26 +143,10 @@ var Socket = function () {
                         _userController2.default.getToken(id).then(function (result) {
                             try {
                                 var userToken = result.token;
-                                console.log(userToken);
                                 self.emit("typing-" + userToken);
                             } catch (err) {}
                         });
                     }
-                });
-
-                //get file and save in uploads folder
-                socket.on("sendFile-" + token, function (data) {
-                    //use fs.writeFile
-                    data = data.image;
-                    data = data.replace(/^data:image\/png;base64,/, "");
-
-                    _fs2.default.writeFile("out.png", data, "base64", function (err) {
-                        console.log(err);
-                    });
-
-                    socket.emit("getMessage-" + token, {
-                        sendMessage: "ok"
-                    });
                 });
 
                 socket.on("disconnect", async function () {

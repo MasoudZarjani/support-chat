@@ -6,7 +6,7 @@ import Utility from '../helpers/utility';
 import userController from './userController';
 
 class messageController {
-    async getMessages(id, page, chat_title_id) {
+    async getMessages(token, page, chat_title_id) {
         try {
             const {
                 message: {
@@ -17,7 +17,7 @@ class messageController {
             let messageStatus = 0;
             var options = {
                 sort: {
-                    createdAt: -1
+                    createdAt: 1
                 },
                 lean: true,
                 page: page,
@@ -27,9 +27,24 @@ class messageController {
                 chat_title_id: chat_title_id,
             }, options)
             messages.docs = _.map(messages.docs, item => {
-                if (item.from == id) {
+                if (item.from == token) {
                     messageStatus = sender
                 } else {
+                    Message.findOneAndUpdate({
+                        _id: item._id
+                    }, {
+                        $set: {
+                            seen: 1
+                        }
+                    }, {
+                        new: true,
+                        useFindAndModify: false
+                    }, (err, doc) => {
+                        if (err) {
+                            console.log("Something wrong when updating data!");
+                        }
+                        item.seen = doc.seen
+                    })
                     messageStatus = receiver
                 }
                 return {
@@ -37,8 +52,9 @@ class messageController {
                     id: item._id,
                     createdAt: Utility.getPersianTime(item.createdAt),
                     text: item.message,
-                    type: 0,
-                    seen: 0,
+                    type: item.type,
+                    seen: item.seen,
+                    file: item.file,
                     date: Utility.getPersianDate(item.createdAt)
                 }
             })
@@ -51,17 +67,31 @@ class messageController {
 
     async setMessage(data, token) {
         try {
-            let from = await userController.getUserApi(token);
-            console.log(from);
-            let to = await userController.getUserApi(data.token);
-            console.log(to);
-            return new Message({
-                chat_title_id: data.chat_title_id,
-                message: data.text,
-                from: from,
-                to: to,
-                type: data.type,
-            }).save()
+            if (data.type == 0) {
+                return new Message({
+                    chat_title_id: data.chat_title_id,
+                    message: data.text,
+                    from: token,
+                    to: data.userToken,
+                    type: data.type,
+                    seen: 0
+                }).save()
+            } else if (data.type == 1) {
+                return new Message({
+                    chat_title_id: data.chat_title_id,
+                    message: data.text,
+                    from: token,
+                    to: data.userToken,
+                    type: data.type,
+                    file: {
+                        path: data.fileName,
+                        mime: data.fileType,
+                        size: data.fileSize,
+                    },
+                    seen: 0
+                }).save()
+            }
+
 
         } catch (err) {
             console.warn(err);

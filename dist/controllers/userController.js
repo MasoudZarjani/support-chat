@@ -66,6 +66,8 @@ var userController = function () {
         key: 'getAdminInfoApi',
         value: async function getAdminInfoApi(req, res, next) {
             await _axios2.default.get('http://app.mahanteymouri.ir/mahant/get-info').then(function (response) {
+                console.log(response.data.data);
+
                 if (response.data.status === true) res.send(response.data.data);
             }).catch(function (error) {
                 console.log(error);

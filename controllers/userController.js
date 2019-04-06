@@ -17,6 +17,21 @@ class userController {
             })
     }
 
+    async getAdminApi(token) {
+        return await axios.post('http://app.mahanteymouri.ir/mahant-api/private/getAdminId', {
+                token: token
+            })
+            .then(function (response) {
+                // handle success
+                if (response.data.status === true)
+                    return response.data.id
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
     async getUsersApi(req, res, next) {
         await axios.post('http://app.mahanteymouri.ir/mahant-api/private/getAllUserHastChat', {
                 token: 'iZQEbfTRBNGke1wxuQS65oJQRTcGh08no3XBHle31AhvPRen7BhsyycQqKFaKYsvVu15SIf1ZMcLuIcz2TR0oKCA5LTS4df2g2XsZ44xs44PhqzeJv9us8CTGvyZUaOELKgrfEZ1siQPp8YRzGnp3f'
@@ -46,6 +61,8 @@ class userController {
     async getAdminInfoApi(req, res, next) {
         await axios.get('http://app.mahanteymouri.ir/mahant/get-info')
             .then(function (response) {
+                console.log(response.data.data)
+
                 if (response.data.status === true)
                     res.send(response.data.data)
             })
