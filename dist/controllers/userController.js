@@ -41,6 +41,19 @@ var userController = function () {
             });
         }
     }, {
+        key: 'getAdminApi',
+        value: async function getAdminApi(token) {
+            return await _axios2.default.post('http://app.mahanteymouri.ir/mahant-api/private/getAdminId', {
+                token: token
+            }).then(function (response) {
+                // handle success
+                if (response.data.status === true) return response.data.id;
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            });
+        }
+    }, {
         key: 'getUsersApi',
         value: async function getUsersApi(req, res, next) {
             await _axios2.default.post('http://app.mahanteymouri.ir/mahant-api/private/getAllUserHastChat', {

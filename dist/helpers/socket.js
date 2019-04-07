@@ -51,15 +51,9 @@ var Socket = function () {
 
                 //userController.onlineStatus(token, constants.user.onlineStatus.online)
                 socket.on("getAllMessage-" + token, function (data) {
-                    _userController2.default.getUserApi(token).then(function (result) {
+                    _messageController2.default.getMessages(token, data.page, data.chat_title_id).then(function (res) {
                         try {
-                            _messageController2.default.getMessages(result.id, data.page, data.chat_title_id).then(function (res) {
-                                try {
-                                    socket.emit("sendAllMessage-" + token, res);
-                                } catch (err) {
-                                    console.log(err);
-                                }
-                            });
+                            socket.emit("sendAllMessage-" + token, res);
                         } catch (err) {
                             console.log(err);
                         }
@@ -68,15 +62,9 @@ var Socket = function () {
 
                 //get admin messages list
                 socket.on("getMessages-" + token, function (data) {
-                    _userController2.default.getUserApi(data.userToken).then(function (result) {
+                    _messageController2.default.getMessages(token, data.page, data.chat_title_id).then(function (res) {
                         try {
-                            _messageController2.default.getMessages(result, data.page, data.chat_title_id).then(function (res) {
-                                try {
-                                    socket.emit("sendMessages-" + token, res);
-                                } catch (err) {
-                                    console.log(err);
-                                }
-                            });
+                            socket.emit("sendMessages-" + token, res);
                         } catch (err) {
                             console.log(err);
                         }
@@ -84,14 +72,10 @@ var Socket = function () {
                 });
 
                 socket.on("sendImage-" + token, function (data) {
-                    var fileReader = new FileReader(),
-                        slice = file.slice(0, 100000);
-
-                    var fileName = 'http://localhost:3000/../../uploads/' + _lodash2.default.random(1000000000, 9999999999) + '_' + data.imageName;
+                    var fileName = __dirname + '/../../uploads/' + _lodash2.default.random(1000000000, 9999999999) + '_' + data.imageName;
                     data.fileName = fileName;
                     _fs2.default.open(fileName, 'a', function (err, fd) {
                         if (err) throw err;
-
                         _fs2.default.write(fd, data.filePath, null, 'Binary', function (err, written, buff) {
                             try {
                                 _fs2.default.close(fd, function () {
@@ -114,14 +98,19 @@ var Socket = function () {
 
                 socket.on("sendMessage-" + token, function (data) {
                     _messageController2.default.setMessage(data, token).then(function (result) {
+                        console.log(result);
                         try {
-                            var userToken = result.token;
+                            var userToken = result.to;
+                            console.log(userToken);
                             self.emit("getMessage-" + userToken, {
                                 id: result._id,
                                 text: result.message,
                                 createdAt: _utility2.default.getPersianTime(result.createdAt),
                                 type: result.type,
-                                messageStatus: 1
+                                messageStatus: 1,
+                                seen: result.seen,
+                                file: result.file,
+                                date: _utility2.default.getPersianDate(result.createdAt)
                             });
                             socket.emit("received-" + token, {
                                 id_msg: data.id_msg,
@@ -139,13 +128,8 @@ var Socket = function () {
                             typing: null
                         });
                     } else {
-                        var id = data.id;
-                        _userController2.default.getToken(id).then(function (result) {
-                            try {
-                                var userToken = result.token;
-                                self.emit("typing-" + userToken);
-                            } catch (err) {}
-                        });
+                        console.log(data);
+                        self.emit("typing-" + data.token);
                     }
                 });
 

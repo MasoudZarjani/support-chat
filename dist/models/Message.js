@@ -27,10 +27,10 @@ var MessageSchema = new _mongoose2.default.Schema({
         default: ''
     },
     from: {
-        type: Number
+        type: String
     },
     to: {
-        type: Number
+        type: String
     },
     chat_title_id: {
         type: Number

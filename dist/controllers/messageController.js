@@ -41,7 +41,7 @@ var messageController = function () {
 
     _createClass(messageController, [{
         key: 'getMessages',
-        value: async function getMessages(id, page, chat_title_id) {
+        value: async function getMessages(token, page, chat_title_id) {
             try {
                 var _constants$message = _constants2.default.message,
                     receiver = _constants$message.receiver,
@@ -50,7 +50,7 @@ var messageController = function () {
                 var messageStatus = 0;
                 var options = {
                     sort: {
-                        createdAt: -1
+                        createdAt: 1
                     },
                     lean: true,
                     page: page,
@@ -60,9 +60,24 @@ var messageController = function () {
                     chat_title_id: chat_title_id
                 }, options);
                 messages.docs = _lodash2.default.map(messages.docs, function (item) {
-                    if (item.from == id) {
+                    if (item.from == token) {
                         messageStatus = sender;
                     } else {
+                        _Message2.default.findOneAndUpdate({
+                            _id: item._id
+                        }, {
+                            $set: {
+                                seen: 1
+                            }
+                        }, {
+                            new: true,
+                            useFindAndModify: false
+                        }, function (err, doc) {
+                            if (err) {
+                                console.log("Something wrong when updating data!");
+                            }
+                            item.seen = doc.seen;
+                        });
                         messageStatus = receiver;
                     }
                     return {
@@ -86,18 +101,12 @@ var messageController = function () {
         key: 'setMessage',
         value: async function setMessage(data, token) {
             try {
-                console.log(data);
-                var from = await _userController2.default.getUserApi(token);
-                console.log({ from: from });
-                var to = await _userController2.default.getUserApi(data.userToken);
-                console.log({ to: to });
-
                 if (data.type == 0) {
                     return new _Message2.default({
                         chat_title_id: data.chat_title_id,
                         message: data.text,
-                        from: from,
-                        to: to,
+                        from: token,
+                        to: data.userToken,
                         type: data.type,
                         seen: 0
                     }).save();
@@ -105,8 +114,8 @@ var messageController = function () {
                     return new _Message2.default({
                         chat_title_id: data.chat_title_id,
                         message: data.text,
-                        from: from,
-                        to: to,
+                        from: token,
+                        to: data.userToken,
                         type: data.type,
                         file: {
                             path: data.fileName,
