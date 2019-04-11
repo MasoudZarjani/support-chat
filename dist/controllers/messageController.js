@@ -50,7 +50,7 @@ var messageController = function () {
                 var messageStatus = 0;
                 var options = {
                     sort: {
-                        createdAt: 1
+                        createdAt: -1
                     },
                     lean: true,
                     page: page,
@@ -59,6 +59,7 @@ var messageController = function () {
                 var messages = await _Message2.default.paginate({
                     chat_title_id: chat_title_id
                 }, options);
+                messages.docs = _lodash2.default.reverse(messages.docs);
                 messages.docs = _lodash2.default.map(messages.docs, function (item) {
                     if (item.from == token) {
                         messageStatus = sender;
@@ -98,9 +99,72 @@ var messageController = function () {
             }
         }
     }, {
+        key: 'getAllMessage',
+        value: async function getAllMessage(token, page, chat_title_id) {
+            try {
+                var _constants$message2 = _constants2.default.message,
+                    receiver = _constants$message2.receiver,
+                    sender = _constants$message2.sender;
+
+                var messageStatus = 0;
+                var options = {
+                    sort: {
+                        createdAt: 1
+                    },
+                    lean: true,
+                    page: page,
+                    limit: 10
+                };
+                var messages = await _Message2.default.find({
+                    chat_title_id: chat_title_id
+                });
+                messages.docs = _lodash2.default.map(messages, function (item) {
+                    if (item.from == token) {
+                        messageStatus = sender;
+                    } else {
+                        _Message2.default.findOneAndUpdate({
+                            _id: item._id
+                        }, {
+                            $set: {
+                                seen: 1
+                            }
+                        }, {
+                            new: true,
+                            useFindAndModify: false
+                        }, function (err, doc) {
+                            if (err) {
+                                console.log("Something wrong when updating data!");
+                            }
+                            item.seen = doc.seen;
+                        });
+                        messageStatus = receiver;
+                    }
+                    return {
+                        messageStatus: messageStatus,
+                        id: item._id,
+                        createdAt: _utility2.default.getPersianTime(item.createdAt),
+                        text: item.message,
+                        type: item.type,
+                        seen: item.seen,
+                        file: item.file,
+                        date: _utility2.default.getPersianDate(item.createdAt)
+                    };
+                });
+                return {
+                    docs: messages
+                };
+            } catch (err) {
+                console.warn(err);
+                return null;
+            }
+        }
+    }, {
         key: 'setMessage',
         value: async function setMessage(data, token) {
             try {
+                if (typeof data.userToken === 'undefined' || data.userToken == null) {
+                    data.userToken = 'rpjEYjOw';
+                }
                 if (data.type == 0) {
                     return new _Message2.default({
                         chat_title_id: data.chat_title_id,

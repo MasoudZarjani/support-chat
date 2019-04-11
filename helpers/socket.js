@@ -22,6 +22,7 @@ class Socket {
                     .getMessages(token, data.page, data.chat_title_id)
                     .then(function (res) {
                         try {
+                            console.log(res)
                             socket.emit(`sendAllMessage-${token}`, res);
                         } catch (err) {
                             console.log(err);
@@ -75,7 +76,6 @@ class Socket {
                     console.log(result)
                     try {
                         let userToken = result.to;
-                        console.log(userToken)
                         self.emit(`getMessage-${userToken}`, {
                             id: result._id,
                             text: result.message,

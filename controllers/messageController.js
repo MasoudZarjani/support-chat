@@ -17,7 +17,7 @@ class messageController {
             let messageStatus = 0;
             var options = {
                 sort: {
-                    createdAt: 1
+                    createdAt: -1
                 },
                 lean: true,
                 page: page,
@@ -26,6 +26,7 @@ class messageController {
             let messages = await Message.paginate({
                 chat_title_id: chat_title_id,
             }, options)
+            messages.docs = _.reverse(messages.docs)
             messages.docs = _.map(messages.docs, item => {
                 if (item.from == token) {
                     messageStatus = sender
@@ -65,8 +66,72 @@ class messageController {
         }
     }
 
+    async getAllMessage(token, page, chat_title_id) {
+        try {
+            const {
+                message: {
+                    receiver,
+                    sender,
+                }
+            } = constants;
+            let messageStatus = 0;
+            var options = {
+                sort: {
+                    createdAt: 1
+                },
+                lean: true,
+                page: page,
+                limit: 10
+            };
+            let messages = await Message.find({
+                chat_title_id: chat_title_id,
+            })
+            messages.docs = _.map(messages, item => {
+                if (item.from == token) {
+                    messageStatus = sender
+                } else {
+                    Message.findOneAndUpdate({
+                        _id: item._id
+                    }, {
+                        $set: {
+                            seen: 1
+                        }
+                    }, {
+                        new: true,
+                        useFindAndModify: false
+                    }, (err, doc) => {
+                        if (err) {
+                            console.log("Something wrong when updating data!");
+                        }
+                        item.seen = doc.seen
+                    })
+                    messageStatus = receiver
+                }
+                return {
+                    messageStatus: messageStatus,
+                    id: item._id,
+                    createdAt: Utility.getPersianTime(item.createdAt),
+                    text: item.message,
+                    type: item.type,
+                    seen: item.seen,
+                    file: item.file,
+                    date: Utility.getPersianDate(item.createdAt)
+                }
+            })
+            return {
+                docs: messages
+            }
+        } catch (err) {
+            console.warn(err);
+            return null;
+        }
+    }
+
     async setMessage(data, token) {
         try {
+            if (typeof data.userToken === 'undefined' || data.userToken == null) {
+                data.userToken = 'rpjEYjOw'
+            }
             if (data.type == 0) {
                 return new Message({
                     chat_title_id: data.chat_title_id,

@@ -53,6 +53,7 @@ var Socket = function () {
                 socket.on("getAllMessage-" + token, function (data) {
                     _messageController2.default.getMessages(token, data.page, data.chat_title_id).then(function (res) {
                         try {
+                            console.log(res);
                             socket.emit("sendAllMessage-" + token, res);
                         } catch (err) {
                             console.log(err);
@@ -101,7 +102,6 @@ var Socket = function () {
                         console.log(result);
                         try {
                             var userToken = result.to;
-                            console.log(userToken);
                             self.emit("getMessage-" + userToken, {
                                 id: result._id,
                                 text: result.message,
