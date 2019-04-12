@@ -30,6 +30,7 @@ class Socket {
                     });
             });
 
+            
             //get admin messages list
             socket.on(`getMessages-${token}`, function (data) {
                 messageController

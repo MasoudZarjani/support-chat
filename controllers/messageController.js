@@ -132,6 +132,7 @@ class messageController {
             if (typeof data.userToken === 'undefined' || data.userToken == null) {
                 data.userToken = 'rpjEYjOw'
             }
+            
             if (data.type == 0) {
                 return new Message({
                     chat_title_id: data.chat_title_id,
