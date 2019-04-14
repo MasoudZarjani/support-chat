@@ -165,6 +165,7 @@ var messageController = function () {
                 if (typeof data.userToken === 'undefined' || data.userToken == null) {
                     data.userToken = 'rpjEYjOw';
                 }
+
                 if (data.type == 0) {
                     return new _Message2.default({
                         chat_title_id: data.chat_title_id,

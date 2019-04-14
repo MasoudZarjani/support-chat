@@ -49,23 +49,14 @@ var Socket = function () {
                 var token = socket.handshake.query.token;
                 console.log("connected: " + token);
 
-                //userController.onlineStatus(token, constants.user.onlineStatus.online)
+                _userController2.default.updateOnlineUser(token, _constants2.default.user.onlineStatus.online);
+
+                socket.broadcast.emit("getUsers", 'ok');
+
                 socket.on("getAllMessage-" + token, function (data) {
                     _messageController2.default.getMessages(token, data.page, data.chat_title_id).then(function (res) {
                         try {
-                            console.log(res);
                             socket.emit("sendAllMessage-" + token, res);
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    });
-                });
-
-                //get admin messages list
-                socket.on("getMessages-" + token, function (data) {
-                    _messageController2.default.getMessages(token, data.page, data.chat_title_id).then(function (res) {
-                        try {
-                            socket.emit("sendMessages-" + token, res);
                         } catch (err) {
                             console.log(err);
                         }
@@ -125,7 +116,7 @@ var Socket = function () {
                 socket.on("typing-" + token, function (data) {
                     if (typeof data === "undefined") {
                         self.emit("typing-admin", {
-                            typing: null
+                            token: token
                         });
                     } else {
                         console.log(data);
@@ -134,7 +125,8 @@ var Socket = function () {
                 });
 
                 socket.on("disconnect", async function () {
-                    //userController.onlineStatus(token, constants.user.onlineStatus.offline)
+                    _userController2.default.updateOnlineUser(token, _constants2.default.user.onlineStatus.offline);
+                    socket.broadcast.emit("getUsers", 'ok');
                 });
             });
         }

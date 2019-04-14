@@ -87,6 +87,18 @@ var userController = function () {
             });
         }
     }, {
+        key: 'updateOnlineUser',
+        value: async function updateOnlineUser(token, status) {
+            await _axios2.default.post('http://app.mahanteymouri.ir/mahant-api/private/updateOnlineChatStatus', {
+                status: status,
+                token: token
+            }).then(function (response) {
+                if (response.data.status === true) return true;else return false;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
         key: 'getUser',
         value: async function getUser(token) {
             try {

@@ -16,28 +16,16 @@ class Socket {
             let token = socket.handshake.query.token;
             console.log(`connected: ${token}`);
 
-            //userController.onlineStatus(token, constants.user.onlineStatus.online)
+            userController.updateOnlineUser(token, constants.user.onlineStatus.online)
+
+            socket.broadcast.emit(`getUsers`, 'ok');
+
             socket.on(`getAllMessage-${token}`, function (data) {
                 messageController
                     .getMessages(token, data.page, data.chat_title_id)
                     .then(function (res) {
                         try {
-                            console.log(res)
                             socket.emit(`sendAllMessage-${token}`, res);
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    });
-            });
-
-            
-            //get admin messages list
-            socket.on(`getMessages-${token}`, function (data) {
-                messageController
-                    .getMessages(token, data.page, data.chat_title_id)
-                    .then(function (res) {
-                        try {
-                            socket.emit(`sendMessages-${token}`, res);
                         } catch (err) {
                             console.log(err);
                         }
@@ -100,7 +88,7 @@ class Socket {
             socket.on(`typing-${token}`, function (data) {
                 if (typeof data === "undefined") {
                     self.emit(`typing-admin`, {
-                        typing: null
+                        token: token
                     });
                 } else {
                     console.log(data)
@@ -109,7 +97,8 @@ class Socket {
             });
 
             socket.on("disconnect", async () => {
-                //userController.onlineStatus(token, constants.user.onlineStatus.offline)
+                userController.updateOnlineUser(token, constants.user.onlineStatus.offline)
+                socket.broadcast.emit(`getUsers`, 'ok');
             });
         });
     }

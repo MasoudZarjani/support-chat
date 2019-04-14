@@ -71,6 +71,22 @@ class userController {
             })
     }
 
+    async updateOnlineUser(token, status) {
+        await axios.post('http://app.mahanteymouri.ir/mahant-api/private/updateOnlineChatStatus', {
+                status: status,
+                token: token
+            })
+            .then(function (response) {
+                if (response.data.status === true)
+                    return true
+                else
+                    return false
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
     async getUser(token) {
         try {
             return await User.findOne({
