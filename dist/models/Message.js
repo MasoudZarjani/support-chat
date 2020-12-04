@@ -32,9 +32,6 @@ var MessageSchema = new _mongoose2.default.Schema({
     to: {
         type: String
     },
-    chat_title_id: {
-        type: Number
-    },
     token: {
         type: String
     },

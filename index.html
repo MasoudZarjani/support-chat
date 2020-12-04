@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font: 13px Helvetica, Arial;
+      }
+      form {
+        background: #000;
+        padding: 3px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+      }
+      form input {
+        border: 0;
+        padding: 10px;
+        width: 90%;
+        margin-right: 0.5%;
+      }
+      form button {
+        width: 9%;
+        background: rgb(130, 224, 255);
+        border: none;
+        padding: 10px;
+      }
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #messages li {
+        padding: 5px 10px;
+      }
+      #messages li:nth-child(odd) {
+        background: #eee;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+</html>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  $(function () {
+    const messages = document.getElementById("messages");
+
+    var token = "e3070cde-9d41-427c-aa8c-35c841ee3773";
+    var socket = io("http://localhost:4000", {
+      query: { token: token },
+    });
+    socket.emit(`getAllMessage-${token}`, { page: 1 });
+    socket.on(`messageList-${token}`, function (data) {
+      data.docs.forEach((element) => {
+        if (element.messageStatus == 0)
+          messages.innerHTML += "<li>" + element.text + "</li>";
+        else
+          messages.innerHTML +=
+            "<li style='dir:rtl; text-align:right'>" + element.text + "</li>";
+      });
+    });
+    $("form").submit(function (e) {
+      e.preventDefault(); // prevents page reloading
+      socket.emit(`sendMessage-${token}`, {
+        text: $("#m").val(),
+        userToken: "138d902d-9fc4-4ddf-a323-3bc89e5b0061",
+        type: 0,
+      });
+      messages.innerHTML += "<li>" + $("#m").val() + "</li>";
+      $("#m").val("");
+      return false;
+    });
+  });
+</script>
